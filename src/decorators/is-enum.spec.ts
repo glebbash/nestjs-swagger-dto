@@ -1,6 +1,6 @@
 import { Result } from 'true-myth';
 
-import { createDto, transform } from '../../tests/helpers';
+import { input, make } from '../../tests/helpers';
 import { IsEnum } from '../nestjs-swagger-dto';
 
 describe('IsEnum', () => {
@@ -11,11 +11,11 @@ describe('IsEnum', () => {
     }
 
     it('accepts specified enum', async () => {
-      expect(await transform(Test, { enumField: 1 })).toStrictEqual(
-        Result.ok(createDto(Test, { enumField: 1 }))
+      expect(await input(Test, { enumField: 1 })).toStrictEqual(
+        Result.ok(make(Test, { enumField: 1 }))
       );
-      expect(await transform(Test, { enumField: 2 })).toStrictEqual(
-        Result.ok(createDto(Test, { enumField: 2 }))
+      expect(await input(Test, { enumField: 2 })).toStrictEqual(
+        Result.ok(make(Test, { enumField: 2 }))
       );
     });
 
@@ -31,7 +31,7 @@ describe('IsEnum', () => {
       ];
 
       for (const testValue of testValues) {
-        expect(await transform(Test, testValue)).toStrictEqual(
+        expect(await input(Test, testValue)).toStrictEqual(
           Result.err('enumField must be one of the following values: 1, 2')
         );
       }
@@ -50,11 +50,11 @@ describe('IsEnum', () => {
     }
 
     it('accepts specified enum', async () => {
-      expect(await transform(Test, { enumField: 'On' })).toStrictEqual(
-        Result.ok(createDto(Test, { enumField: Enum.On }))
+      expect(await input(Test, { enumField: 'On' })).toStrictEqual(
+        Result.ok(make(Test, { enumField: Enum.On }))
       );
-      expect(await transform(Test, { enumField: 'Off' })).toStrictEqual(
-        Result.ok(createDto(Test, { enumField: Enum.Off }))
+      expect(await input(Test, { enumField: 'Off' })).toStrictEqual(
+        Result.ok(make(Test, { enumField: Enum.Off }))
       );
     });
 
@@ -70,7 +70,7 @@ describe('IsEnum', () => {
       ];
 
       for (const testValue of testValues) {
-        expect(await transform(Test, testValue)).toStrictEqual(
+        expect(await input(Test, testValue)).toStrictEqual(
           Result.err('enumField must be a valid enum value')
         );
       }
@@ -84,19 +84,19 @@ describe('IsEnum', () => {
     }
 
     it('accepts enum arrays', async () => {
-      expect(await transform(Test, { enumField: ['a', 'b'] })).toStrictEqual(
-        Result.ok(createDto(Test, { enumField: ['a', 'b'] }))
+      expect(await input(Test, { enumField: ['a', 'b'] })).toStrictEqual(
+        Result.ok(make(Test, { enumField: ['a', 'b'] }))
       );
-      expect(await transform(Test, { enumField: [] })).toStrictEqual(
-        Result.ok(createDto(Test, { enumField: [] }))
+      expect(await input(Test, { enumField: [] })).toStrictEqual(
+        Result.ok(make(Test, { enumField: [] }))
       );
     });
 
     it('rejects everything else', async () => {
-      expect(await transform(Test, { enumField: true })).toStrictEqual(
+      expect(await input(Test, { enumField: true })).toStrictEqual(
         Result.err('each value in enumField must be one of the following values: a, b')
       );
-      expect(await transform(Test, { enumField: ['a', 'b', 'c'] })).toStrictEqual(
+      expect(await input(Test, { enumField: ['a', 'b', 'c'] })).toStrictEqual(
         Result.err('each value in enumField must be one of the following values: a, b')
       );
     });

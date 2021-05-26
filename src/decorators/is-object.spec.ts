@@ -1,6 +1,6 @@
 import { Result } from 'true-myth';
 
-import { createDto, transform } from '../../tests/helpers';
+import { input, make } from '../../tests/helpers';
 import { IsObject } from '../nestjs-swagger-dto';
 
 describe('IsObject', () => {
@@ -11,11 +11,11 @@ describe('IsObject', () => {
     }
 
     it('accepts objects', async () => {
-      expect(await transform(Test, { objectField: { a: 1 } })).toStrictEqual(
-        Result.ok(createDto(Test, { objectField: { a: 1 } }))
+      expect(await input(Test, { objectField: { a: 1 } })).toStrictEqual(
+        Result.ok(make(Test, { objectField: { a: 1 } }))
       );
-      expect(await transform(Test, { objectField: {} })).toStrictEqual(
-        Result.ok(createDto(Test, { objectField: {} }))
+      expect(await input(Test, { objectField: {} })).toStrictEqual(
+        Result.ok(make(Test, { objectField: {} }))
       );
     });
 
@@ -30,7 +30,7 @@ describe('IsObject', () => {
       ];
 
       for (const testValue of testValues) {
-        expect(await transform(Test, testValue)).toStrictEqual(
+        expect(await input(Test, testValue)).toStrictEqual(
           Result.err('objectField must be an object')
         );
       }
@@ -44,13 +44,13 @@ describe('IsObject', () => {
         objectField!: Record<string, unknown>;
       }
 
-      expect(await transform(Test, { objectField: { a: 1, b: 2, c: 3 } })).toStrictEqual(
-        Result.ok(createDto(Test, { objectField: { a: 1, b: 2, c: 3 } }))
+      expect(await input(Test, { objectField: { a: 1, b: 2, c: 3 } })).toStrictEqual(
+        Result.ok(make(Test, { objectField: { a: 1, b: 2, c: 3 } }))
       );
-      expect(await transform(Test, { objectField: { a: 1 } })).toStrictEqual(
+      expect(await input(Test, { objectField: { a: 1 } })).toStrictEqual(
         Result.err('objectField must have at least 3 properties')
       );
-      expect(await transform(Test, { objectField: false })).toStrictEqual(
+      expect(await input(Test, { objectField: false })).toStrictEqual(
         Result.err('objectField must be an object')
       );
     });
@@ -63,19 +63,19 @@ describe('IsObject', () => {
     }
 
     it('accepts object arrays', async () => {
-      expect(await transform(Test, { objectField: [{ a: 1 }, { b: 2 }, { c: 3 }] })).toStrictEqual(
-        Result.ok(createDto(Test, { objectField: [{ a: 1 }, { b: 2 }, { c: 3 }] }))
+      expect(await input(Test, { objectField: [{ a: 1 }, { b: 2 }, { c: 3 }] })).toStrictEqual(
+        Result.ok(make(Test, { objectField: [{ a: 1 }, { b: 2 }, { c: 3 }] }))
       );
-      expect(await transform(Test, { objectField: [] })).toStrictEqual(
-        Result.ok(createDto(Test, { objectField: [] }))
+      expect(await input(Test, { objectField: [] })).toStrictEqual(
+        Result.ok(make(Test, { objectField: [] }))
       );
     });
 
     it('rejects everything else', async () => {
-      expect(await transform(Test, { objectField: true })).toStrictEqual(
+      expect(await input(Test, { objectField: true })).toStrictEqual(
         Result.err('each value in objectField must be an object')
       );
-      expect(await transform(Test, { objectField: ['a', 'b', 'c'] })).toStrictEqual(
+      expect(await input(Test, { objectField: ['a', 'b', 'c'] })).toStrictEqual(
         Result.err('each value in objectField must be an object')
       );
     });

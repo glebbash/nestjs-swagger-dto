@@ -1,6 +1,6 @@
 import { Result } from 'true-myth';
 
-import { createDto, transform } from '../../tests/helpers';
+import { input, make } from '../../tests/helpers';
 import { IsConstant } from '../nestjs-swagger-dto';
 
 describe('IsConstant', () => {
@@ -11,8 +11,8 @@ describe('IsConstant', () => {
     }
 
     it('accepts specified constant', async () => {
-      expect(await transform(Test, { constantField: 123 })).toStrictEqual(
-        Result.ok(createDto(Test, { constantField: 123 }))
+      expect(await input(Test, { constantField: 123 })).toStrictEqual(
+        Result.ok(make(Test, { constantField: 123 }))
       );
     });
 
@@ -22,7 +22,7 @@ describe('IsConstant', () => {
         constantField!: [1, 2, 3];
       }
 
-      expect(await transform(Test, { constantField: [1, 2, 3] })).toStrictEqual(
+      expect(await input(Test, { constantField: [1, 2, 3] })).toStrictEqual(
         Result.err('constantField must be equal to 1, 2, 3')
       );
     });
@@ -39,7 +39,7 @@ describe('IsConstant', () => {
       ];
 
       for (const testValue of testValues) {
-        expect(await transform(Test, testValue)).toStrictEqual(
+        expect(await input(Test, testValue)).toStrictEqual(
           Result.err('constantField must be equal to 123')
         );
       }
@@ -53,25 +53,25 @@ describe('IsConstant', () => {
     }
 
     it('accepts specified constant array', async () => {
-      expect(await transform(Test, { constantField: [1, 1, 1] })).toStrictEqual(
-        Result.ok(createDto(Test, { constantField: [1, 1, 1] }))
+      expect(await input(Test, { constantField: [1, 1, 1] })).toStrictEqual(
+        Result.ok(make(Test, { constantField: [1, 1, 1] }))
       );
     });
 
     it('rejects everything else', async () => {
-      expect(await transform(Test, { constantField: [1] })).toStrictEqual(
+      expect(await input(Test, { constantField: [1] })).toStrictEqual(
         Result.err('constantField must contain at least 3 elements')
       );
-      expect(await transform(Test, { constantField: ['1'] })).toStrictEqual(
+      expect(await input(Test, { constantField: ['1'] })).toStrictEqual(
         Result.err('each value in constantField must be equal to 1')
       );
-      expect(await transform(Test, { constantField: ['1', '1', '1'] })).toStrictEqual(
+      expect(await input(Test, { constantField: ['1', '1', '1'] })).toStrictEqual(
         Result.err('each value in constantField must be equal to 1')
       );
-      expect(await transform(Test, { constantField: [1, 2, 3] })).toStrictEqual(
+      expect(await input(Test, { constantField: [1, 2, 3] })).toStrictEqual(
         Result.err('each value in constantField must be equal to 1')
       );
-      expect(await transform(Test, { constantField: [2, 2, 2] })).toStrictEqual(
+      expect(await input(Test, { constantField: [2, 2, 2] })).toStrictEqual(
         Result.err('each value in constantField must be equal to 1')
       );
     });

@@ -1,5 +1,5 @@
 import { ApiProperty, ApiPropertyOptions } from '@nestjs/swagger';
-import { Expose } from 'class-transformer';
+import { Expose, Transform } from 'class-transformer';
 import { ArrayMaxSize, ArrayMinSize, IsArray, ValidateIf } from 'class-validator';
 
 export type Base<T> = Partial<{
@@ -32,6 +32,7 @@ export const compose = <T>(
     !!isArray ? IsArray() : noop,
     minLength ? ArrayMinSize(minLength) : noop,
     maxLength ? ArrayMaxSize(maxLength) : noop,
+    def !== undefined ? Transform(({ value }) => (value === undefined ? def : value)) : noop,
     ApiProperty({
       ...(!!isArray
         ? {

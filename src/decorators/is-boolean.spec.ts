@@ -1,6 +1,6 @@
 import { Result } from 'true-myth';
 
-import { createDto, transform } from '../../tests/helpers';
+import { input, make, output } from '../../tests/helpers';
 import { IsBoolean } from '../nestjs-swagger-dto';
 
 describe('IsBoolean', () => {
@@ -11,12 +11,17 @@ describe('IsBoolean', () => {
     }
 
     it('accepts booleans', async () => {
-      expect(await transform(Test, { booleanField: true })).toStrictEqual(
-        Result.ok(createDto(Test, { booleanField: true }))
+      expect(await input(Test, { booleanField: true })).toStrictEqual(
+        Result.ok(make(Test, { booleanField: true }))
       );
-      expect(await transform(Test, { booleanField: false })).toStrictEqual(
-        Result.ok(createDto(Test, { booleanField: false }))
+      expect(await input(Test, { booleanField: false })).toStrictEqual(
+        Result.ok(make(Test, { booleanField: false }))
       );
+    });
+
+    it('transforms to plain', async () => {
+      const dto = make(Test, { booleanField: true });
+      expect(output(dto)).toStrictEqual({ booleanField: true });
     });
 
     it('rejects everything else', async () => {
@@ -32,7 +37,7 @@ describe('IsBoolean', () => {
       ];
 
       for (const testValue of testValues) {
-        expect(await transform(Test, testValue)).toStrictEqual(
+        expect(await input(Test, testValue)).toStrictEqual(
           Result.err('booleanField must be a boolean value')
         );
       }
@@ -46,17 +51,17 @@ describe('IsBoolean', () => {
     }
 
     it('accepts boolean strings and booleans', async () => {
-      expect(await transform(Test, { booleanField: 'true' })).toStrictEqual(
-        Result.ok(createDto(Test, { booleanField: true }))
+      expect(await input(Test, { booleanField: 'true' })).toStrictEqual(
+        Result.ok(make(Test, { booleanField: true }))
       );
-      expect(await transform(Test, { booleanField: 'false' })).toStrictEqual(
-        Result.ok(createDto(Test, { booleanField: false }))
+      expect(await input(Test, { booleanField: 'false' })).toStrictEqual(
+        Result.ok(make(Test, { booleanField: false }))
       );
-      expect(await transform(Test, { booleanField: true })).toStrictEqual(
-        Result.ok(createDto(Test, { booleanField: true }))
+      expect(await input(Test, { booleanField: true })).toStrictEqual(
+        Result.ok(make(Test, { booleanField: true }))
       );
-      expect(await transform(Test, { booleanField: false })).toStrictEqual(
-        Result.ok(createDto(Test, { booleanField: false }))
+      expect(await input(Test, { booleanField: false })).toStrictEqual(
+        Result.ok(make(Test, { booleanField: false }))
       );
     });
 
@@ -75,7 +80,7 @@ describe('IsBoolean', () => {
       ];
 
       for (const testValue of testValues) {
-        expect(await transform(Test, testValue)).toStrictEqual(
+        expect(await input(Test, testValue)).toStrictEqual(
           Result.err('booleanField must be a boolean value')
         );
       }
@@ -89,13 +94,13 @@ describe('IsBoolean', () => {
     }
 
     it('accepts boolean and undefined', async () => {
-      expect(await transform(Test, { booleanField: true })).toStrictEqual(
-        Result.ok(createDto(Test, { booleanField: true }))
+      expect(await input(Test, { booleanField: true })).toStrictEqual(
+        Result.ok(make(Test, { booleanField: true }))
       );
-      expect(await transform(Test, { booleanField: false })).toStrictEqual(
-        Result.ok(createDto(Test, { booleanField: false }))
+      expect(await input(Test, { booleanField: false })).toStrictEqual(
+        Result.ok(make(Test, { booleanField: false }))
       );
-      expect(await transform(Test, {})).toStrictEqual(Result.ok(createDto(Test, {})));
+      expect(await input(Test, {})).toStrictEqual(Result.ok(make(Test, {})));
     });
 
     it('rejects everything else', async () => {
@@ -110,10 +115,27 @@ describe('IsBoolean', () => {
       ];
 
       for (const testValue of testValues) {
-        expect(await transform(Test, testValue)).toStrictEqual(
+        expect(await input(Test, testValue)).toStrictEqual(
           Result.err('booleanField must be a boolean value')
         );
       }
+    });
+  });
+
+  describe('default', () => {
+    class Test {
+      @IsBoolean({ optional: true, default: false })
+      booleanField?: boolean;
+    }
+
+    it('returns specified defaults if value is undefined', async () => {
+      expect(await input(Test, { booleanField: true })).toStrictEqual(
+        Result.ok(make(Test, { booleanField: true }))
+      );
+      expect(await input(Test, { booleanField: false })).toStrictEqual(
+        Result.ok(make(Test, { booleanField: false }))
+      );
+      expect(await input(Test, {})).toStrictEqual(Result.ok(make(Test, { booleanField: false })));
     });
   });
 
@@ -124,14 +146,14 @@ describe('IsBoolean', () => {
     }
 
     it('accepts boolean and null', async () => {
-      expect(await transform(Test, { booleanField: true })).toStrictEqual(
-        Result.ok(createDto(Test, { booleanField: true }))
+      expect(await input(Test, { booleanField: true })).toStrictEqual(
+        Result.ok(make(Test, { booleanField: true }))
       );
-      expect(await transform(Test, { booleanField: false })).toStrictEqual(
-        Result.ok(createDto(Test, { booleanField: false }))
+      expect(await input(Test, { booleanField: false })).toStrictEqual(
+        Result.ok(make(Test, { booleanField: false }))
       );
-      expect(await transform(Test, { booleanField: null })).toStrictEqual(
-        Result.ok(createDto(Test, { booleanField: null }))
+      expect(await input(Test, { booleanField: null })).toStrictEqual(
+        Result.ok(make(Test, { booleanField: null }))
       );
     });
 
@@ -147,7 +169,7 @@ describe('IsBoolean', () => {
       ];
 
       for (const testValue of testValues) {
-        expect(await transform(Test, testValue)).toStrictEqual(
+        expect(await input(Test, testValue)).toStrictEqual(
           Result.err('booleanField must be a boolean value')
         );
       }
@@ -161,16 +183,16 @@ describe('IsBoolean', () => {
     }
 
     it('accepts boolean and null and undefined', async () => {
-      expect(await transform(Test, { booleanField: true })).toStrictEqual(
-        Result.ok(createDto(Test, { booleanField: true }))
+      expect(await input(Test, { booleanField: true })).toStrictEqual(
+        Result.ok(make(Test, { booleanField: true }))
       );
-      expect(await transform(Test, { booleanField: false })).toStrictEqual(
-        Result.ok(createDto(Test, { booleanField: false }))
+      expect(await input(Test, { booleanField: false })).toStrictEqual(
+        Result.ok(make(Test, { booleanField: false }))
       );
-      expect(await transform(Test, { booleanField: null })).toStrictEqual(
-        Result.ok(createDto(Test, { booleanField: null }))
+      expect(await input(Test, { booleanField: null })).toStrictEqual(
+        Result.ok(make(Test, { booleanField: null }))
       );
-      expect(await transform(Test, {})).toStrictEqual(Result.ok(createDto(Test, {})));
+      expect(await input(Test, {})).toStrictEqual(Result.ok(make(Test, {})));
     });
 
     it('rejects everything else', async () => {
@@ -184,7 +206,7 @@ describe('IsBoolean', () => {
       ];
 
       for (const testValue of testValues) {
-        expect(await transform(Test, testValue)).toStrictEqual(
+        expect(await input(Test, testValue)).toStrictEqual(
           Result.err('booleanField must be a boolean value')
         );
       }
@@ -198,19 +220,19 @@ describe('IsBoolean', () => {
     }
 
     it('accepts boolean arrays', async () => {
-      expect(await transform(Test, { booleanField: [true, false] })).toStrictEqual(
-        Result.ok(createDto(Test, { booleanField: [true, false] }))
+      expect(await input(Test, { booleanField: [true, false] })).toStrictEqual(
+        Result.ok(make(Test, { booleanField: [true, false] }))
       );
-      expect(await transform(Test, { booleanField: [] })).toStrictEqual(
-        Result.ok(createDto(Test, { booleanField: [] }))
+      expect(await input(Test, { booleanField: [] })).toStrictEqual(
+        Result.ok(make(Test, { booleanField: [] }))
       );
     });
 
     it('rejects everything else', async () => {
-      expect(await transform(Test, { booleanField: true })).toStrictEqual(
+      expect(await input(Test, { booleanField: true })).toStrictEqual(
         Result.err('booleanField must be an array')
       );
-      expect(await transform(Test, { booleanField: [1, 2, 3] })).toStrictEqual(
+      expect(await input(Test, { booleanField: [1, 2, 3] })).toStrictEqual(
         Result.err('each value in booleanField must be a boolean value')
       );
     });

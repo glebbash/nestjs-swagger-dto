@@ -1,6 +1,6 @@
 import { Result } from 'true-myth';
 
-import { createDto, transform } from '../../tests/helpers';
+import { input, make } from '../../tests/helpers';
 import { IsNested, IsNumber } from '../nestjs-swagger-dto';
 
 describe('IsNested', () => {
@@ -16,13 +16,13 @@ describe('IsNested', () => {
     }
 
     it('accepts nested object fields', async () => {
-      expect(await transform(Test, { nestedField: { numberField: 1 } })).toStrictEqual(
-        Result.ok(createDto(Test, { nestedField: createDto(Nested, { numberField: 1 }) }))
+      expect(await input(Test, { nestedField: { numberField: 1 } })).toStrictEqual(
+        Result.ok(make(Test, { nestedField: make(Nested, { numberField: 1 }) }))
       );
     });
 
     it('rejects everything else', async () => {
-      expect(await transform(Test, { nestedField: { numberField: 'abc' } })).toStrictEqual(
+      expect(await input(Test, { nestedField: { numberField: 'abc' } })).toStrictEqual(
         Result.err('numberField must be a number conforming to the specified constraints')
       );
 
@@ -36,7 +36,7 @@ describe('IsNested', () => {
       ];
 
       for (const testValue of testValues) {
-        expect(await transform(Test, testValue)).toStrictEqual(
+        expect(await input(Test, testValue)).toStrictEqual(
           Result.err('nested property nestedField must be an object')
         );
       }
@@ -56,35 +56,35 @@ describe('IsNested', () => {
 
     it('accepts nested object arrays', async () => {
       expect(
-        await transform(Test, {
+        await input(Test, {
           nestedField: [{ numberField: 1 }, { numberField: 2 }, { numberField: 3 }],
         })
       ).toStrictEqual(
         Result.ok(
-          createDto(Test, {
+          make(Test, {
             nestedField: [
-              createDto(Nested, { numberField: 1 }),
-              createDto(Nested, { numberField: 2 }),
-              createDto(Nested, { numberField: 3 }),
+              make(Nested, { numberField: 1 }),
+              make(Nested, { numberField: 2 }),
+              make(Nested, { numberField: 3 }),
             ],
           })
         )
       );
-      expect(await transform(Test, { nestedField: [] })).toStrictEqual(
-        Result.ok(createDto(Test, { nestedField: [] }))
+      expect(await input(Test, { nestedField: [] })).toStrictEqual(
+        Result.ok(make(Test, { nestedField: [] }))
       );
     });
 
     it('rejects everything else', async () => {
       expect(
-        await transform(Test, {
+        await input(Test, {
           nestedField: [{ a: 1 }, { b: 2 }, { c: 3 }],
         })
       ).toStrictEqual(Result.err('property a should not exist'));
-      expect(await transform(Test, { nestedField: true })).toStrictEqual(
+      expect(await input(Test, { nestedField: true })).toStrictEqual(
         Result.err('nestedField must be an array')
       );
-      expect(await transform(Test, { nestedField: ['a', 'b', 'c'] })).toStrictEqual(
+      expect(await input(Test, { nestedField: ['a', 'b', 'c'] })).toStrictEqual(
         Result.err('nested property nestedField must only contain objects')
       );
     });

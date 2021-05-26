@@ -1,6 +1,6 @@
 import { Result } from 'true-myth';
 
-import { createDto, transform } from '../../tests/helpers';
+import { input, make } from '../../tests/helpers';
 import { IsNumber } from '../nestjs-swagger-dto';
 
 describe('IsNumber', () => {
@@ -11,11 +11,11 @@ describe('IsNumber', () => {
     }
 
     it('accepts numbers', async () => {
-      expect(await transform(Test, { numberField: 1 })).toStrictEqual(
-        Result.ok(createDto(Test, { numberField: 1 }))
+      expect(await input(Test, { numberField: 1 })).toStrictEqual(
+        Result.ok(make(Test, { numberField: 1 }))
       );
-      expect(await transform(Test, { numberField: 1.1 })).toStrictEqual(
-        Result.ok(createDto(Test, { numberField: 1.1 }))
+      expect(await input(Test, { numberField: 1.1 })).toStrictEqual(
+        Result.ok(make(Test, { numberField: 1.1 }))
       );
     });
 
@@ -30,7 +30,7 @@ describe('IsNumber', () => {
       ];
 
       for (const testValue of testValues) {
-        expect(await transform(Test, testValue)).toStrictEqual(
+        expect(await input(Test, testValue)).toStrictEqual(
           Result.err('numberField must be a number conforming to the specified constraints')
         );
       }
@@ -44,13 +44,13 @@ describe('IsNumber', () => {
         numberField!: number;
       }
 
-      expect(await transform(Test, { numberField: 10 })).toStrictEqual(
-        Result.ok(createDto(Test, { numberField: 10 }))
+      expect(await input(Test, { numberField: 10 })).toStrictEqual(
+        Result.ok(make(Test, { numberField: 10 }))
       );
-      expect(await transform(Test, { numberField: 1 })).toStrictEqual(
+      expect(await input(Test, { numberField: 1 })).toStrictEqual(
         Result.err('numberField must not be less than 5')
       );
-      expect(await transform(Test, { numberField: false })).toStrictEqual(
+      expect(await input(Test, { numberField: false })).toStrictEqual(
         Result.err('numberField must be a number conforming to the specified constraints')
       );
     });
@@ -61,13 +61,13 @@ describe('IsNumber', () => {
         numberField!: number;
       }
 
-      expect(await transform(Test, { numberField: 5 })).toStrictEqual(
-        Result.ok(createDto(Test, { numberField: 5 }))
+      expect(await input(Test, { numberField: 5 })).toStrictEqual(
+        Result.ok(make(Test, { numberField: 5 }))
       );
-      expect(await transform(Test, { numberField: 11 })).toStrictEqual(
+      expect(await input(Test, { numberField: 11 })).toStrictEqual(
         Result.err('numberField must not be greater than 10')
       );
-      expect(await transform(Test, { numberField: false })).toStrictEqual(
+      expect(await input(Test, { numberField: false })).toStrictEqual(
         Result.err('numberField must be a number conforming to the specified constraints')
       );
     });
@@ -78,16 +78,16 @@ describe('IsNumber', () => {
         numberField!: number;
       }
 
-      expect(await transform(Test, { numberField: 5 })).toStrictEqual(
-        Result.ok(createDto(Test, { numberField: 5 }))
+      expect(await input(Test, { numberField: 5 })).toStrictEqual(
+        Result.ok(make(Test, { numberField: 5 }))
       );
-      expect(await transform(Test, { numberField: 1 })).toStrictEqual(
+      expect(await input(Test, { numberField: 1 })).toStrictEqual(
         Result.err('numberField must not be less than 5')
       );
-      expect(await transform(Test, { numberField: 11 })).toStrictEqual(
+      expect(await input(Test, { numberField: 11 })).toStrictEqual(
         Result.err('numberField must not be greater than 10')
       );
-      expect(await transform(Test, { numberField: false })).toStrictEqual(
+      expect(await input(Test, { numberField: false })).toStrictEqual(
         Result.err('numberField must be a number conforming to the specified constraints')
       );
     });
@@ -100,17 +100,17 @@ describe('IsNumber', () => {
     }
 
     it('accepts number strings and numbers', async () => {
-      expect(await transform(Test, { numberField: '10' })).toStrictEqual(
-        Result.ok(createDto(Test, { numberField: 10 }))
+      expect(await input(Test, { numberField: '10' })).toStrictEqual(
+        Result.ok(make(Test, { numberField: 10 }))
       );
-      expect(await transform(Test, { numberField: '-10.5' })).toStrictEqual(
-        Result.ok(createDto(Test, { numberField: -10.5 }))
+      expect(await input(Test, { numberField: '-10.5' })).toStrictEqual(
+        Result.ok(make(Test, { numberField: -10.5 }))
       );
-      expect(await transform(Test, { numberField: 10 })).toStrictEqual(
-        Result.ok(createDto(Test, { numberField: 10 }))
+      expect(await input(Test, { numberField: 10 })).toStrictEqual(
+        Result.ok(make(Test, { numberField: 10 }))
       );
-      expect(await transform(Test, { numberField: -10.5 })).toStrictEqual(
-        Result.ok(createDto(Test, { numberField: -10.5 }))
+      expect(await input(Test, { numberField: -10.5 })).toStrictEqual(
+        Result.ok(make(Test, { numberField: -10.5 }))
       );
     });
 
@@ -127,10 +127,24 @@ describe('IsNumber', () => {
       ];
 
       for (const testValue of testValues) {
-        expect(await transform(Test, testValue)).toStrictEqual(
+        expect(await input(Test, testValue)).toStrictEqual(
           Result.err('numberField must be a number conforming to the specified constraints')
         );
       }
+    });
+  });
+
+  describe('default and stringified', () => {
+    class Test {
+      @IsNumber({ optional: true, stringified: true, default: 25 })
+      numberField?: number;
+    }
+
+    it('returns specified defaults and parses stringified fields', async () => {
+      expect(await input(Test, { numberField: '1' })).toStrictEqual(
+        Result.ok(make(Test, { numberField: 1 }))
+      );
+      expect(await input(Test, {})).toStrictEqual(Result.ok(make(Test, { numberField: 25 })));
     });
   });
 
@@ -141,21 +155,21 @@ describe('IsNumber', () => {
     }
 
     it('accepts number arrays', async () => {
-      expect(await transform(Test, { numberField: [1, 2, 3] })).toStrictEqual(
-        Result.ok(createDto(Test, { numberField: [1, 2, 3] }))
+      expect(await input(Test, { numberField: [1, 2, 3] })).toStrictEqual(
+        Result.ok(make(Test, { numberField: [1, 2, 3] }))
       );
-      expect(await transform(Test, { numberField: [] })).toStrictEqual(
-        Result.ok(createDto(Test, { numberField: [] }))
+      expect(await input(Test, { numberField: [] })).toStrictEqual(
+        Result.ok(make(Test, { numberField: [] }))
       );
     });
 
     it('rejects everything else', async () => {
-      expect(await transform(Test, { numberField: true })).toStrictEqual(
+      expect(await input(Test, { numberField: true })).toStrictEqual(
         Result.err(
           'each value in numberField must be a number conforming to the specified constraints'
         )
       );
-      expect(await transform(Test, { numberField: ['a', 'b', 'c'] })).toStrictEqual(
+      expect(await input(Test, { numberField: ['a', 'b', 'c'] })).toStrictEqual(
         Result.err(
           'each value in numberField must be a number conforming to the specified constraints'
         )
