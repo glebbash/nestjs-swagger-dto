@@ -12,7 +12,11 @@ export async function input<T extends Record<string, any>>(
   object: unknown
 ): Promise<Result<T, string>> {
   const res = plainToClass(cls, object, { exposeUnsetFields: false });
-  const errors = await validate(res, { whitelist: true, forbidNonWhitelisted: true });
+  const errors = await validate(res, {
+    whitelist: true,
+    forbidNonWhitelisted: true,
+    forbidUnknownValues: true,
+  });
   return errors.length === 0 ? Result.ok(res) : Result.err(getValidationError(errors[0]));
 }
 

@@ -148,6 +148,24 @@ describe('IsNumber', () => {
     });
   });
 
+  describe('default stringified min', () => {
+    class Test {
+      @IsNumber({ stringified: true, optional: true, default: 200, min: 0 })
+      numberField?: number;
+    }
+
+    it('returns specified defaults and parses stringified fields', async () => {
+      expect(await input(Test, { numberField: '2' })).toStrictEqual(
+        Result.ok(make(Test, { numberField: 2 }))
+      );
+    });
+    it('returns specified defaults and parses stringified fields', async () => {
+      expect(await input(Test, { numberField: 2 })).toStrictEqual(
+        Result.ok(make(Test, { numberField: 2 }))
+      );
+    });
+  });
+
   describe('array', () => {
     class Test {
       @IsNumber({ isArray: true })
