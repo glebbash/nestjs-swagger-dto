@@ -2,7 +2,7 @@ import { ClassConstructor, classToPlain, plainToClass } from 'class-transformer'
 import { validate, ValidationError } from 'class-validator';
 import { Result } from 'true-myth';
 
-export function make<T>(cls: ClassConstructor<T>, object: T): T {
+export function make<T, D extends T>(cls: ClassConstructor<T>, object: D): D {
   return Object.assign(new cls(), object);
 }
 
@@ -21,7 +21,7 @@ export async function input<T extends Record<string, any>>(
 }
 
 export function output<T>(instance: T): T {
-  return classToPlain(instance, { strategy: 'excludeAll', excludeExtraneousValues: true }) as T;
+  return classToPlain(instance, { strategy: 'exposeAll', excludeExtraneousValues: true }) as T;
 }
 
 function getValidationError(error: ValidationError): string {

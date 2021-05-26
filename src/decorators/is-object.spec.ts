@@ -1,6 +1,6 @@
 import { Result } from 'true-myth';
 
-import { input, make } from '../../tests/helpers';
+import { input, make, output } from '../../tests/helpers';
 import { IsObject } from '../nestjs-swagger-dto';
 
 describe('IsObject', () => {
@@ -17,6 +17,12 @@ describe('IsObject', () => {
       expect(await input(Test, { objectField: {} })).toStrictEqual(
         Result.ok(make(Test, { objectField: {} }))
       );
+    });
+
+    it('transforms objects', async () => {
+      expect(output(make(Test, { objectField: { a: 1 }, b: 2 }))).toStrictEqual({
+        objectField: { a: 1 },
+      });
     });
 
     it('rejects everything else', async () => {
