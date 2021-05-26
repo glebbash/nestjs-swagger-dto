@@ -9,7 +9,7 @@
     "dto"
   ],
   "main": "dist/nestjs-swagger-dto.js",
-  "typings": "dist/@types/nestjs-swagger-dto.d.ts",
+  "types": "dist/nestjs-swagger-dto.d.ts",
   "files": [
     "dist"
   ],
