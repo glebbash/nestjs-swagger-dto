@@ -1,6 +1,6 @@
 import { Result } from 'true-myth';
 
-import { input, make } from '../../tests/helpers';
+import { input, make, output } from '../../tests/helpers';
 import { IsNested, IsNumber } from '../nestjs-swagger-dto';
 
 describe('IsNested', () => {
@@ -53,6 +53,22 @@ describe('IsNested', () => {
       @IsNested({ type: Nested, isArray: true })
       nestedField!: Nested[];
     }
+
+    it('transforms nested object arrays', async () => {
+      expect(
+        output(
+          make(Test, {
+            nestedField: [
+              make(Nested, { numberField: 1 }),
+              make(Nested, { numberField: 2 }),
+              make(Nested, { numberField: 3 }),
+            ],
+          })
+        )
+      ).toStrictEqual({
+        nestedField: [{ numberField: 1 }, { numberField: 2 }, { numberField: 3 }],
+      });
+    });
 
     it('accepts nested object arrays', async () => {
       expect(
