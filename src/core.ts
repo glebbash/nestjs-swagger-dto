@@ -34,15 +34,11 @@ export const compose = <T>(
     maxLength ? ArrayMaxSize(maxLength) : noop,
     def !== undefined ? Transform(({ value }) => (value === undefined ? def : value)) : noop,
     ApiProperty({
-      ...(!!isArray
-        ? {
-            type: 'array',
-            items: apiPropertyOptions as never,
-            minLength,
-            maxLength,
-          }
-        : apiPropertyOptions),
+      ...apiPropertyOptions,
+      minLength,
+      maxLength,
       ...(nullable && { nullable }),
+      isArray: !!isArray,
       name,
       description,
       example,
