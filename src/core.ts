@@ -27,8 +27,8 @@ export const compose = <T>(
   return applyDecorators(
     ...decorators,
     Expose({ name }),
-    optional ? ValidateIf((o, v) => v !== undefined) : noop,
-    nullable ? ValidateIf((o, v) => v !== null) : noop,
+    optional ? ValidateIf((_, v) => v !== undefined) : noop,
+    nullable ? ValidateIf((_, v) => v !== null) : noop,
     !!isArray ? IsArray() : noop,
     minLength ? ArrayMinSize(minLength) : noop,
     maxLength ? ArrayMaxSize(maxLength) : noop,
