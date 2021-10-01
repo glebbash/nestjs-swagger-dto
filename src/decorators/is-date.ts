@@ -1,7 +1,7 @@
 import { Transform } from 'class-transformer';
 import { IsDate as IsDateCV, isDateString } from 'class-validator';
 
-import { Base, compose, noop } from '../core';
+import { Base, compose } from '../core';
 
 const crudeDateRegex = /^\d{4}-\d{2}-\d{2}$/;
 
