@@ -1,3 +1,10 @@
+import { Type } from '@nestjs/common';
+import { NestFactory } from '@nestjs/core';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import {
+  ReferenceObject,
+  SchemaObject,
+} from '@nestjs/swagger/dist/interfaces/open-api-spec.interface';
 import { ClassConstructor, classToPlain, plainToClass } from 'class-transformer';
 import { validate, ValidationError } from 'class-validator';
 import { Result } from 'true-myth';
@@ -28,4 +35,19 @@ function getValidationError(error: ValidationError): string {
   return error.constraints
     ? Object.values(error.constraints)[0]
     : getValidationError((error.children as ValidationError[])[0]);
+}
+
+export async function generateSchemas(
+  models: Type[]
+): Promise<Record<string, SchemaObject | ReferenceObject>> {
+  class AppModule {}
+
+  const spec = SwaggerModule.createDocument(
+    (await NestFactory.createApplicationContext(AppModule, { logger: false })) as never,
+    new DocumentBuilder().build(),
+    { extraModels: models }
+  );
+
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  return spec.components!.schemas!;
 }
