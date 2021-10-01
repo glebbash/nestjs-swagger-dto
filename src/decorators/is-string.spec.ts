@@ -168,4 +168,66 @@ describe('IsString', () => {
       );
     });
   });
+
+  describe('date (date-time)', () => {
+    describe('date', () => {
+      class Test {
+        @IsString({ isDate: { format: 'date' } })
+        date!: string;
+      }
+
+      it('accepts date as YYYY-MM-DD', async () => {
+        expect(await input(Test, { date: '2020-01-01' })).toStrictEqual(
+          Result.ok(make(Test, { date: '2020-01-01' }))
+        );
+      });
+
+      test.each([
+        ['2020-01-01_not_a_date'],
+        ['2020-01-01 01:01:01'],
+        ['2020-01-01T01:01:01.000Z'],
+        [''],
+        ['not_a_date'],
+      ])('rejects %s', async (value) => {
+        expect(await input(Test, { date: value })).toStrictEqual(
+          Result.err("date must be in a format 'YYYY-MM-DD'")
+        );
+      });
+    });
+
+    describe('date-time', () => {
+      class Test {
+        @IsString({ isDate: { format: 'date-time' } })
+        date!: string;
+      }
+
+      test.each([
+        ['2020'],
+        ['2020-01-01'],
+        ['2020-01-01 00'],
+        ['2020-01-01 00:00'],
+        ['2020-01-01 00:00:00'],
+        ['2020-01-01T00:00:00.000Z'],
+        ['2020-01-01T00:00:00+00:00'],
+      ])('accepts %s', async (value) => {
+        expect(await input(Test, { date: value })).toStrictEqual(
+          Result.ok(make(Test, { date: value }))
+        );
+      });
+
+      test.each([
+        ['2020-01-01 100'],
+        ['-1'],
+        ['1633099642455'],
+        ['Fri Oct 01 2021 18:14:15 GMT+0300 (Eastern European Summer Time)'],
+        ['2020333'],
+        [''],
+        ['not_a_date'],
+      ])('rejects %s', async (value) => {
+        expect(await input(Test, { date: value })).toStrictEqual(
+          Result.err('date is not in a ISO8601 format.')
+        );
+      });
+    });
+  });
 });

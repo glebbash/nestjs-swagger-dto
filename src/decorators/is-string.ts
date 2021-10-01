@@ -1,6 +1,27 @@
-import { IsEmail, IsString as IsStringCV, Length, Matches } from 'class-validator';
+import {
+  IsEmail,
+  isISO8601,
+  IsString as IsStringCV,
+  Length,
+  Matches,
+  ValidationOptions,
+} from 'class-validator';
 
 import { Base, compose, noop } from '../core';
+import { CustomValidate, CustomValidateOptions } from './utils/custom-validator';
+
+export type DateFormat = 'date' | 'date-time';
+
+const dateValidators: { [key in DateFormat]: CustomValidateOptions } = {
+  date: {
+    validator: (value) => /^\d{4}-\d{2}-\d{2}$/.test(value) && !isNaN(new Date(value).getDate()),
+    message: ({ property }) => `${property} is not formatted as \`yyyy-mm-dd\` and be a valid Date`,
+  },
+  'date-time': {
+    validator: (value) => isISO8601(value, { strict: true }) && !isNaN(new Date(value).getDate()),
+    message: ({ property }) => `${property} is not in a ISO8601 format.`,
+  },
+};
 
 export const IsString = ({
   maxLength,
@@ -8,13 +29,17 @@ export const IsString = ({
   pattern,
   canBeEmpty,
   isEmail,
+  isDate,
+  customValidate,
   ...base
 }: Base<string> & {
   canBeEmpty?: true;
   maxLength?: number;
   minLength?: number;
-  pattern?: { regex: RegExp; message?: string };
+  pattern?: { regex: RegExp; message?: ValidationOptions['message'] };
   isEmail?: true;
+  isDate?: { format: DateFormat };
+  customValidate?: CustomValidateOptions;
 } = {}): PropertyDecorator =>
   compose(
     {
@@ -22,6 +47,7 @@ export const IsString = ({
       minLength,
       maxLength,
       ...(isEmail && { format: 'email' }),
+      ...(isDate && { format: isDate.format }),
       pattern: pattern?.regex.toString().slice(1, 1), // removes trailing slashes
     },
     base,
@@ -30,5 +56,7 @@ export const IsString = ({
       ? Length(minLength ?? 0, maxLength, { each: !!base.isArray })
       : noop,
     isEmail ? IsEmail(undefined, { each: !!base.isArray }) : noop,
-    pattern ? Matches(pattern.regex, { message: pattern.message, each: !!base.isArray }) : noop
+    pattern ? Matches(pattern.regex, { message: pattern.message, each: !!base.isArray }) : noop,
+    isDate ? CustomValidate(dateValidators[isDate.format], { each: !!base.isArray }) : noop,
+    customValidate ? CustomValidate(customValidate, { each: !!base.isArray }) : noop
   );
