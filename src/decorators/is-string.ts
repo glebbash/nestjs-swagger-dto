@@ -15,7 +15,7 @@ export type DateFormat = 'date' | 'date-time';
 const dateValidators: { [key in DateFormat]: CustomValidateOptions } = {
   date: {
     validator: (value) => /^\d{4}-\d{2}-\d{2}$/.test(value) && !isNaN(new Date(value).getDate()),
-    message: ({ property }) => `${property} is not formatted as \`yyyy-mm-dd\` and be a valid Date`,
+    message: ({ property }) => `${property} is not formatted as \`yyyy-mm-dd\` or not a valid Date`,
   },
   'date-time': {
     validator: (value) => isISO8601(value, { strict: true }) && !isNaN(new Date(value).getDate()),

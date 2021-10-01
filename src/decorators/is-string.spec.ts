@@ -169,7 +169,7 @@ describe('IsString', () => {
     });
   });
 
-  describe('date (date-time)', () => {
+  describe('date', () => {
     describe('date', () => {
       class Test {
         @IsString({ isDate: { format: 'date' } })
@@ -190,7 +190,7 @@ describe('IsString', () => {
         ['not_a_date'],
       ])('rejects %s', async (value) => {
         expect(await input(Test, { date: value })).toStrictEqual(
-          Result.err("date must be in a format 'YYYY-MM-DD'")
+          Result.err('date is not formatted as `yyyy-mm-dd` or not a valid Date')
         );
       });
     });
@@ -204,7 +204,6 @@ describe('IsString', () => {
       test.each([
         ['2020'],
         ['2020-01-01'],
-        ['2020-01-01 00'],
         ['2020-01-01 00:00'],
         ['2020-01-01 00:00:00'],
         ['2020-01-01T00:00:00.000Z'],
@@ -217,6 +216,7 @@ describe('IsString', () => {
 
       test.each([
         ['2020-01-01 100'],
+        ['2020-01-01 00'],
         ['-1'],
         ['1633099642455'],
         ['Fri Oct 01 2021 18:14:15 GMT+0300 (Eastern European Summer Time)'],
@@ -228,6 +228,73 @@ describe('IsString', () => {
           Result.err('date is not in a ISO8601 format.')
         );
       });
+    });
+  });
+
+  describe('custom validator', () => {
+    it('does not fail, if validator returns true', async () => {
+      class Test {
+        @IsString({
+          customValidate: {
+            validator: () => true,
+            message: 'test error message',
+          },
+        })
+        stringField!: string;
+      }
+
+      expect(await input(Test, { stringField: 'any' })).toStrictEqual(
+        Result.ok(make(Test, { stringField: 'any' }))
+      );
+    });
+
+    it('returns message, if validator returns false', async () => {
+      class Test {
+        @IsString({
+          customValidate: {
+            validator: () => false,
+            message: 'test error message',
+          },
+        })
+        stringField!: string;
+      }
+
+      expect(await input(Test, { stringField: 'any' })).toStrictEqual(
+        Result.err('test error message')
+      );
+    });
+
+    it('returns custom message, if validator returns false', async () => {
+      class Test {
+        @IsString({
+          customValidate: {
+            validator: () => false,
+            message: ({ property }) => `${property} is invalid`,
+          },
+        })
+        stringField!: string;
+      }
+
+      expect(await input(Test, { stringField: 'any' })).toStrictEqual(
+        Result.err('stringField is invalid')
+      );
+    });
+
+    it('works with arrays', async () => {
+      class Test {
+        @IsString({
+          isArray: true,
+          customValidate: {
+            validator: () => false,
+            message: ({ property }) => `each value in ${property} is invalid`,
+          },
+        })
+        stringField!: string[];
+      }
+
+      expect(await input(Test, { stringField: 'any' })).toStrictEqual(
+        Result.err('each value in stringField is invalid')
+      );
     });
   });
 });
