@@ -1,6 +1,6 @@
 import { Result } from 'true-myth';
 
-import { input, make, output } from '../../tests/helpers';
+import { input, make } from '../../tests/helpers';
 import { IsDate } from '../nestjs-swagger-dto';
 
 describe('IsDate', () => {
@@ -29,30 +29,6 @@ describe('IsDate', () => {
         Result.err('date is not formatted as `yyyy-mm-dd`')
       );
     });
-
-    // it('transforms to plain', async () => {
-    //   const dto = make(Test, { booleanField: true });
-    //   expect(output(dto)).toStrictEqual({ booleanField: true });
-    // });
-
-    // it('rejects everything else', async () => {
-    //   const testValues: unknown[] = [
-    //     { booleanField: 'true' },
-    //     { booleanField: 'false' },
-    //     { booleanField: 'abc' },
-    //     { booleanField: 0 },
-    //     { booleanField: [] },
-    //     { booleanField: {} },
-    //     { booleanField: null },
-    //     {},
-    //   ];
-
-    //   for (const testValue of testValues) {
-    //     expect(await input(Test, testValue)).toStrictEqual(
-    //       Result.err('booleanField must be a boolean value')
-    //     );
-    //   }
-    // });
   });
 
   describe('single date-time', () => {
