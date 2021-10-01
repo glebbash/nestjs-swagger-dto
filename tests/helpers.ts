@@ -28,7 +28,11 @@ export async function input<T extends Record<string, any>>(
 }
 
 export function output<T>(instance: T): T {
-  return classToPlain(instance, { strategy: 'exposeAll', excludeExtraneousValues: true }) as T;
+  return classToPlain(instance, {
+    strategy: 'exposeAll',
+    excludeExtraneousValues: true,
+    exposeUnsetFields: false,
+  }) as T;
 }
 
 function getValidationError(error: ValidationError): string {

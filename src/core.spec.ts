@@ -15,8 +15,8 @@ describe('core options', () => {
 
   describe('support for custom options', () => {
     class Test {
-      @DtoDecorator({ optional: true, meta: 'hello' })
-      booleanField?: string;
+      @DtoDecorator({ meta: 'hello' })
+      booleanField!: boolean;
     }
 
     it('generates correct schema', async () => {
@@ -34,8 +34,8 @@ describe('core options', () => {
     });
 
     it('transforms to plain', async () => {
-      const dto = make(Test, {});
-      expect(output(dto)).toStrictEqual({});
+      const dto = make(Test, { booleanField: true });
+      expect(output(dto)).toStrictEqual({ booleanField: true });
     });
 
     it('applies property decorator correctly', async () => {

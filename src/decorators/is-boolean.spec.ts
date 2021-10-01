@@ -17,7 +17,6 @@ describe('IsBoolean', () => {
           properties: {
             booleanField: {
               type: 'boolean',
-              default: false,
             },
           },
           required: ['booleanField'],
@@ -72,7 +71,6 @@ describe('IsBoolean', () => {
           properties: {
             booleanField: {
               type: 'boolean',
-              default: false,
             },
           },
           required: ['booleanField'],
@@ -119,6 +117,22 @@ describe('IsBoolean', () => {
           Result.err('booleanField must be a boolean value')
         );
       }
+    });
+  });
+
+  describe('stringified and optional', () => {
+    class Test {
+      @IsBoolean({ stringified: true, optional: true })
+      booleanField?: boolean;
+    }
+
+    it('transforms to plain', async () => {
+      const dto = make(Test, {});
+      expect(output(dto)).toStrictEqual({});
+    });
+
+    it('accepts undefined value', async () => {
+      expect(await input(Test, {})).toStrictEqual(Result.ok(make(Test, {})));
     });
   });
 });
