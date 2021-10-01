@@ -2714,12 +2714,96 @@ img {
 			</a>
 			<p><a href="https://github.com/glebbash/nestjs-swagger-dto/actions"><img src="https://github.com/glebbash/nestjs-swagger-dto/workflows/build/badge.svg" alt="Deploy"></a>
 			<a href="https://coveralls.io/github/glebbash/nestjs-swagger-dto?branch=master"><img src="https://coveralls.io/repos/github/glebbash/nestjs-swagger-dto/badge.svg?branch=master" alt="Coverage Status"></a></p>
-			<p>Nestjs swagger dto decorators</p>
-			<!-- TODO: add extended examples -->
-			<p>Installation:</p>
+			<a href="#nestjs-swagger-dto-decorators" id="nestjs-swagger-dto-decorators" style="color: inherit; text-decoration: none;">
+				<h2>Nest.js Swagger DTO decorators</h2>
+			</a>
+			<p>This library combines common <code>@nestjs/swagger</code>, <code>class-transformer</code> and <code>class-validator</code> decorators that are used together into one decorator for full Nest.js DTO lifecycle including OpenAPI schema descriptions.</p>
+			<a href="#installation" id="installation" style="color: inherit; text-decoration: none;">
+				<h2>Installation</h2>
+			</a>
 			<pre><code class="language-sh"><span style="color: #000000">npm i nestjs-swagger-dto</span>
 </code></pre>
-			<!-- TODO: add usage examples -->
+			<a href="#contents" id="contents" style="color: inherit; text-decoration: none;">
+				<h2>Contents</h2>
+			</a>
+			<p>This library contains the following decorators</p>
+			<table>
+				<thead>
+					<tr>
+						<th>Name</th>
+						<th>Description</th>
+					</tr>
+				</thead>
+				<tbody><tr>
+						<td>IsBoolean</td>
+						<td>boolean</td>
+					</tr>
+					<tr>
+						<td>IsConstant</td>
+						<td>constant</td>
+					</tr>
+					<tr>
+						<td>IsDate</td>
+						<td>date / date-time</td>
+					</tr>
+					<tr>
+						<td>IsEnum</td>
+						<td>enum object / array of values</td>
+					</tr>
+					<tr>
+						<td>IsNested</td>
+						<td>nested DTO</td>
+					</tr>
+					<tr>
+						<td>IsNumber</td>
+						<td>numbers</td>
+					</tr>
+					<tr>
+						<td>IsObject</td>
+						<td>typed plain js objects</td>
+					</tr>
+					<tr>
+						<td>IsString</td>
+						<td>strings</td>
+					</tr>
+			</tbody></table>
+			<p>All of the decorators support the following parameters:</p>
+			<table>
+				<thead>
+					<tr>
+						<th>Name</th>
+						<th>Description</th>
+					</tr>
+				</thead>
+				<tbody><tr>
+						<td>description</td>
+						<td>adds description</td>
+					</tr>
+					<tr>
+						<td>example</td>
+						<td>adds example</td>
+					</tr>
+					<tr>
+						<td>name</td>
+						<td>sets the name for serialized property</td>
+					</tr>
+					<tr>
+						<td>optional</td>
+						<td>makes property optional</td>
+					</tr>
+					<tr>
+						<td>nullable</td>
+						<td>makes property nullable</td>
+					</tr>
+					<tr>
+						<td>isArray</td>
+						<td>changes the type of property to array of items of this type</td>
+					</tr>
+			</tbody></table>
+			<p>Also decorators have additional parameters like: <code>min</code>, <code>max</code> for <code>IsNumber</code>.</p>
+			<a href="#other" id="other" style="color: inherit; text-decoration: none;">
+				<h2>Other</h2>
+			</a>
 			<p>Bootstrapped with: <a href="https://github.com/glebbash/create-ts-lib-gh">create-ts-lib-gh</a></p>
 			<p>This project is <a href="LICENSE">Mit Licensed</a>.</p>
 		</div>
@@ -2731,6 +2815,7 @@ img {
 						<h3>Modules</h3>
 						<ul class="tsd-index-list">
 							<li class="tsd-kind-module"><a href="modules/core.html" class="tsd-kind-icon">core</a></li>
+							<li class="tsd-kind-module"><a href="modules/core_spec.html" class="tsd-kind-icon">core.spec</a></li>
 							<li class="tsd-kind-module"><a href="modules/decorators_is_boolean.html" class="tsd-kind-icon">decorators/is-<wbr>boolean</a></li>
 							<li class="tsd-kind-module"><a href="modules/decorators_is_boolean_spec.html" class="tsd-kind-icon">decorators/is-<wbr>boolean.spec</a></li>
 							<li class="tsd-kind-module"><a href="modules/decorators_is_constant.html" class="tsd-kind-icon">decorators/is-<wbr>constant</a></li>
