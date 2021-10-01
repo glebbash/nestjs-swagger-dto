@@ -35,8 +35,8 @@ export const compose = <T>(
     def !== undefined ? Transform(({ value }) => (value === undefined ? def : value)) : noop,
     ApiProperty({
       ...apiPropertyOptions,
-      minLength,
-      maxLength,
+      minItems: minLength,
+      maxItems: maxLength,
       ...(nullable && { nullable }),
       isArray: !!isArray,
       name,
