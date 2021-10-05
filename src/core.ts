@@ -2,15 +2,25 @@ import { ApiProperty, ApiPropertyOptions } from '@nestjs/swagger';
 import { Expose, Transform } from 'class-transformer';
 import { ArrayMaxSize, ArrayMinSize, IsArray, ValidateIf } from 'class-validator';
 
-export type Base<T> = Partial<{
-  example: T;
-  name?: string;
-  optional: true;
-  description: string;
-  default: T;
-  isArray?: true | { minLength?: number; maxLength?: number; length?: number };
-  nullable?: true;
-}>;
+export type Base<T> =
+  | {
+      example?: T;
+      name?: string;
+      optional?: true;
+      description?: string;
+      default?: T;
+      isArray?: undefined;
+      nullable?: true;
+    }
+  | {
+      example?: T[];
+      name?: string;
+      optional?: true;
+      description?: string;
+      default?: T[];
+      isArray: true | { minLength?: number; maxLength?: number; length?: number };
+      nullable?: true;
+    };
 
 export const noop = (): void => undefined;
 
