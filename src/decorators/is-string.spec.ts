@@ -248,7 +248,7 @@ describe('IsString', () => {
         ['not_a_date'],
       ])('rejects %s', async (value) => {
         expect(await input(Test, { stringField: value })).toStrictEqual(
-          Result.err('date is not formatted as `yyyy-mm-dd` or not a valid Date')
+          Result.err('stringField is not formatted as `yyyy-mm-dd` or not a valid Date')
         );
       });
     });
@@ -298,7 +298,7 @@ describe('IsString', () => {
         ['not_a_date'],
       ])('rejects %s', async (value) => {
         expect(await input(Test, { stringField: value })).toStrictEqual(
-          Result.err('date is not in a ISO8601 format.')
+          Result.err('stringField is not in a ISO8601 format.')
         );
       });
     });
