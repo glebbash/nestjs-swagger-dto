@@ -87,6 +87,17 @@ describe('IsString', () => {
         Result.err('stringField must be a string')
       );
     });
+
+    it('allows empty strings if canBeEmpty is specified', async () => {
+      class TestCanBeEmpty {
+        @IsString({ canBeEmpty: true, maxLength: 10 })
+        stringField!: string;
+      }
+
+      expect(await input(TestCanBeEmpty, { stringField: '' })).toStrictEqual(
+        Result.ok(make(TestCanBeEmpty, { stringField: '' }))
+      );
+    });
   });
 
   describe('pattern', () => {
@@ -265,7 +276,7 @@ describe('IsString', () => {
             type: 'object',
             properties: {
               stringField: {
-                type: 'array',
+                type: 'string',
                 format: 'date-time',
               },
             },
