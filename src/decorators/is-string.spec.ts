@@ -1,6 +1,6 @@
 import { Result } from 'true-myth';
 
-import { input, make } from '../../tests/helpers';
+import { generateSchemas, input, make } from '../../tests/helpers';
 import { IsString } from '../nestjs-swagger-dto';
 
 describe('IsString', () => {
@@ -9,6 +9,20 @@ describe('IsString', () => {
       @IsString()
       stringField!: string;
     }
+
+    it('generates correct schema', async () => {
+      expect(await generateSchemas([Test])).toStrictEqual({
+        Test: {
+          type: 'object',
+          properties: {
+            stringField: {
+              type: 'string',
+            },
+          },
+          required: ['stringField'],
+        },
+      });
+    });
 
     it('accepts strings', async () => {
       expect(await input(Test, { stringField: 'abc' })).toStrictEqual(
@@ -38,46 +52,28 @@ describe('IsString', () => {
   });
 
   describe('length', () => {
-    it('checks minLength', async () => {
-      class Test {
-        @IsString({ minLength: 5 })
-        stringField!: string;
-      }
+    class Test {
+      @IsString({ minLength: 5, maxLength: 10 })
+      stringField!: string;
+    }
 
-      expect(await input(Test, { stringField: 'aaaaa' })).toStrictEqual(
-        Result.ok(make(Test, { stringField: 'aaaaa' }))
-      );
-      expect(await input(Test, { stringField: 'aaa' })).toStrictEqual(
-        Result.err('stringField must be longer than or equal to 5 characters')
-      );
-      expect(await input(Test, { stringField: false })).toStrictEqual(
-        Result.err('stringField must be a string')
-      );
-    });
-
-    it('checks maxLength', async () => {
-      class Test {
-        @IsString({ maxLength: 10 })
-        stringField!: string;
-      }
-
-      expect(await input(Test, { stringField: 'aaa' })).toStrictEqual(
-        Result.ok(make(Test, { stringField: 'aaa' }))
-      );
-      expect(await input(Test, { stringField: 'a'.repeat(11) })).toStrictEqual(
-        Result.err('stringField must be shorter than or equal to 10 characters')
-      );
-      expect(await input(Test, { stringField: false })).toStrictEqual(
-        Result.err('stringField must be a string')
-      );
+    it('generates correct schema', async () => {
+      expect(await generateSchemas([Test])).toStrictEqual({
+        Test: {
+          type: 'object',
+          properties: {
+            stringField: {
+              type: 'string',
+              minLength: 5,
+              maxLength: 10,
+            },
+          },
+          required: ['stringField'],
+        },
+      });
     });
 
     it('checks minLength and maxLength', async () => {
-      class Test {
-        @IsString({ minLength: 5, maxLength: 10 })
-        stringField!: string;
-      }
-
       expect(await input(Test, { stringField: 'aaaaa' })).toStrictEqual(
         Result.ok(make(Test, { stringField: 'aaaaa' }))
       );
@@ -94,12 +90,27 @@ describe('IsString', () => {
   });
 
   describe('pattern', () => {
-    it('accepts strings with specified pattern and rejects other ones', async () => {
-      class Test {
-        @IsString({ pattern: { regex: /^a+$/ } })
-        stringField!: string;
-      }
+    class Test {
+      @IsString({ pattern: { regex: /^a+$/ } })
+      stringField!: string;
+    }
 
+    it('generates correct schema', async () => {
+      expect(await generateSchemas([Test])).toStrictEqual({
+        Test: {
+          type: 'object',
+          properties: {
+            stringField: {
+              type: 'string',
+              pattern: '^a+$',
+            },
+          },
+          required: ['stringField'],
+        },
+      });
+    });
+
+    it('accepts strings with specified pattern and rejects other ones', async () => {
       expect(await input(Test, { stringField: 'aaaaa' })).toStrictEqual(
         Result.ok(make(Test, { stringField: 'aaaaa' }))
       );
@@ -112,26 +123,41 @@ describe('IsString', () => {
     });
 
     it('returns custom message if pattern fails to match', async () => {
-      class Test {
+      class TestCustomMessage {
         @IsString({
           pattern: { regex: /^a+$/, message: 'stringField must only contain "a" letters' },
         })
         stringField!: string;
       }
 
-      expect(await input(Test, { stringField: 'aaab' })).toStrictEqual(
+      expect(await input(TestCustomMessage, { stringField: 'aaab' })).toStrictEqual(
         Result.err('stringField must only contain "a" letters')
       );
     });
   });
 
   describe('email', () => {
-    it('accepts email strings and rejects other ones', async () => {
-      class Test {
-        @IsString({ isEmail: true })
-        stringField!: string;
-      }
+    class Test {
+      @IsString({ isEmail: true })
+      stringField!: string;
+    }
 
+    it('generates correct schema', async () => {
+      expect(await generateSchemas([Test])).toStrictEqual({
+        Test: {
+          type: 'object',
+          properties: {
+            stringField: {
+              type: 'string',
+              format: 'email',
+            },
+          },
+          required: ['stringField'],
+        },
+      });
+    });
+
+    it('accepts email strings and rejects other ones', async () => {
       expect(await input(Test, { stringField: 'abc@abc.abc' })).toStrictEqual(
         Result.ok(make(Test, { stringField: 'abc@abc.abc' }))
       );
@@ -149,6 +175,23 @@ describe('IsString', () => {
       @IsString({ isArray: true })
       stringField!: string[];
     }
+
+    it('generates correct schema', async () => {
+      expect(await generateSchemas([Test])).toStrictEqual({
+        Test: {
+          type: 'object',
+          properties: {
+            stringField: {
+              type: 'array',
+              items: {
+                type: 'string',
+              },
+            },
+          },
+          required: ['stringField'],
+        },
+      });
+    });
 
     it('accepts string arrays', async () => {
       expect(await input(Test, { stringField: ['a', 'b', 'c'] })).toStrictEqual(
@@ -173,12 +216,27 @@ describe('IsString', () => {
     describe('date', () => {
       class Test {
         @IsString({ isDate: { format: 'date' } })
-        date!: string;
+        stringField!: string;
       }
 
+      it('generates correct schema', async () => {
+        expect(await generateSchemas([Test])).toStrictEqual({
+          Test: {
+            type: 'object',
+            properties: {
+              stringField: {
+                type: 'string',
+                format: 'date',
+              },
+            },
+            required: ['stringField'],
+          },
+        });
+      });
+
       it('accepts date as YYYY-MM-DD', async () => {
-        expect(await input(Test, { date: '2020-01-01' })).toStrictEqual(
-          Result.ok(make(Test, { date: '2020-01-01' }))
+        expect(await input(Test, { stringField: '2020-01-01' })).toStrictEqual(
+          Result.ok(make(Test, { stringField: '2020-01-01' }))
         );
       });
 
@@ -189,7 +247,7 @@ describe('IsString', () => {
         [''],
         ['not_a_date'],
       ])('rejects %s', async (value) => {
-        expect(await input(Test, { date: value })).toStrictEqual(
+        expect(await input(Test, { stringField: value })).toStrictEqual(
           Result.err('date is not formatted as `yyyy-mm-dd` or not a valid Date')
         );
       });
@@ -198,8 +256,23 @@ describe('IsString', () => {
     describe('date-time', () => {
       class Test {
         @IsString({ isDate: { format: 'date-time' } })
-        date!: string;
+        stringField!: string;
       }
+
+      it('generates correct schema', async () => {
+        expect(await generateSchemas([Test])).toStrictEqual({
+          Test: {
+            type: 'object',
+            properties: {
+              stringField: {
+                type: 'array',
+                format: 'date-time',
+              },
+            },
+            required: ['stringField'],
+          },
+        });
+      });
 
       test.each([
         ['2020'],
@@ -209,8 +282,8 @@ describe('IsString', () => {
         ['2020-01-01T00:00:00.000Z'],
         ['2020-01-01T00:00:00+00:00'],
       ])('accepts %s', async (value) => {
-        expect(await input(Test, { date: value })).toStrictEqual(
-          Result.ok(make(Test, { date: value }))
+        expect(await input(Test, { stringField: value })).toStrictEqual(
+          Result.ok(make(Test, { stringField: value }))
         );
       });
 
@@ -224,7 +297,7 @@ describe('IsString', () => {
         [''],
         ['not_a_date'],
       ])('rejects %s', async (value) => {
-        expect(await input(Test, { date: value })).toStrictEqual(
+        expect(await input(Test, { stringField: value })).toStrictEqual(
           Result.err('date is not in a ISO8601 format.')
         );
       });

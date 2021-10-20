@@ -12,7 +12,7 @@ import { CustomValidate, CustomValidateOptions } from './utils/custom-validator'
 
 export type DateFormat = 'date' | 'date-time';
 
-const dateValidators: { [key in DateFormat]: CustomValidateOptions } = {
+const dateValidators: Record<DateFormat, CustomValidateOptions> = {
   date: {
     validator: (value) => /^\d{4}-\d{2}-\d{2}$/.test(value) && !isNaN(new Date(value).getDate()),
     message: ({ property }) => `${property} is not formatted as \`yyyy-mm-dd\` or not a valid Date`,
@@ -48,7 +48,7 @@ export const IsString = ({
       maxLength,
       ...(isEmail && { format: 'email' }),
       ...(isDate && { format: isDate.format }),
-      pattern: pattern?.regex.toString().slice(1, 1), // removes trailing slashes
+      pattern: pattern?.regex?.toString()?.slice(1, -1), // removes trailing slashes
     },
     base,
     IsStringCV({ each: !!base.isArray }),
