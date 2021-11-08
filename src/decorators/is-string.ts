@@ -12,7 +12,7 @@ import { CustomValidate, CustomValidateOptions } from './utils/custom-validator'
 
 export type DateFormat = 'date' | 'date-time';
 
-const dateValidators: Record<DateFormat, CustomValidateOptions> = {
+const dateValidators: Record<DateFormat, CustomValidateOptions<string>> = {
   date: {
     validator: (value) => /^\d{4}-\d{2}-\d{2}$/.test(value) && !isNaN(new Date(value).getDate()),
     message: ({ property }) => `${property} is not formatted as \`yyyy-mm-dd\` or not a valid Date`,
