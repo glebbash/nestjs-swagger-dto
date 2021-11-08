@@ -21,7 +21,7 @@ jobs:
       - run: npm run test:ci
 
       - name: Collect coverage
-        if: ${{ matrix.node === 16 }}
+        if: matrix.node == 16
         uses: coverallsapp/github-action@master
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
