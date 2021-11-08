@@ -1,22 +1,39 @@
 name: build
-on: ["push", "pull_request"]
+on: ['push', 'pull_request']
 
 jobs:
   test:
-    name: Build and test
-    runs-on: ubuntu-20.04
+    name: Test
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node: [12, 14, 16]
     steps:
       - uses: actions/checkout@v1
 
-      - name: Use Node.js 14
+      - name: Use Node.js ${{ matrix.node }}
         uses: actions/setup-node@v1
         with:
-          node-version: 14
+          node-version: ${{ matrix.node }}
 
-      - name: Test and generate coverage
-        run: |
-          npm ci
-          npm run test:prod
+      - run: npm ci
+
+      - run: npm run test:ci
+
+  coverage:
+    name: Build and test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+
+      - name: Use Node.js 16
+        uses: actions/setup-node@v1
+        with:
+          node-version: 16
+
+      - run: npm ci
+
+      - run: npm run test:ci
 
       - name: Coveralls
         uses: coverallsapp/github-action@master
@@ -27,7 +44,7 @@ jobs:
   release:
     name: Release
     if: github.ref == 'refs/heads/master'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     needs: test
     steps:
       - name: Checkout
@@ -35,16 +52,16 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Use Node.js 14
+      - name: Use Node.js 16
         uses: actions/setup-node@v1
         with:
-          node-version: 14
+          node-version: 16
 
-      - name: Install dependencies
-        run: |
-          npm ci
-          npm run build
-          npm run build:docs
+      - run: npm ci
+
+      - run: npm run build
+
+      - run: npm run build:docs
 
       - name: Publish docs
         uses: peaceiris/actions-gh-pages@v3
