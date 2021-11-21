@@ -1,15 +1,18 @@
 import { IsObject as IsObjectCV, ValidateBy } from 'class-validator';
 
-import { Base, compose, noop } from '../core';
+import { compose, noop, PropertyOptions } from '../core';
 
 export const IsObject = <T extends Record<string, unknown>>({
   message,
   minProperties,
   ...base
-}: Base<T> & {
-  message?: string;
-  minProperties?: number;
-} = {}): PropertyDecorator =>
+}: PropertyOptions<
+  T,
+  {
+    message?: string;
+    minProperties?: number;
+  }
+> = {}): PropertyDecorator =>
   compose(
     { type: 'object', minProperties },
     base,

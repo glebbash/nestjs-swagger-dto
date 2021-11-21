@@ -1,7 +1,7 @@
 import { Transform } from 'class-transformer';
 import { IsDate as IsDateCV, isDateString } from 'class-validator';
 
-import { Base, compose } from '../core';
+import { compose, PropertyOptions } from '../core';
 
 const crudeDateRegex = /^\d{4}-\d{2}-\d{2}$/;
 
@@ -9,7 +9,7 @@ const crudeDateRegex = /^\d{4}-\d{2}-\d{2}$/;
 export const IsDate = ({
   format,
   ...base
-}: Omit<Base<Date>, 'isArray'> & { format: 'date' | 'date-time' }): PropertyDecorator =>
+}: Omit<PropertyOptions<Date, { format: 'date' | 'date-time' }>, 'isArray'>): PropertyDecorator =>
   compose(
     { type: 'string', format },
     base,

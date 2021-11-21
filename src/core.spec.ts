@@ -2,10 +2,13 @@ import { IsBoolean } from 'class-validator';
 import { Result } from 'true-myth';
 
 import { generateSchemas, input, make, output } from '../tests/helpers';
-import { Base, compose } from './core';
+import { compose, PropertyOptions } from './core';
 
 describe('core options', () => {
-  const DtoDecorator = ({ meta, ...base }: Base<boolean> & { meta?: string }): PropertyDecorator =>
+  const DtoDecorator = ({
+    meta,
+    ...base
+  }: PropertyOptions<boolean, { meta?: string }>): PropertyDecorator =>
     compose(
       { type: 'boolean' },
       base,

@@ -1,11 +1,11 @@
 import { IsEnum as IsEnumCV, IsIn } from 'class-validator';
 
-import { Base, compose } from '../core';
+import { compose, PropertyOptions } from '../core';
 
 export const IsEnum = <T>({
   enum: e,
   ...base
-}: Base<T> & { enum: T[] | Record<string, T> }): PropertyDecorator =>
+}: PropertyOptions<T, { enum: T[] | Record<string, T> }>): PropertyDecorator =>
   compose(
     { type: 'enum', enum: e },
     base,

@@ -1,12 +1,12 @@
 import { Transform } from 'class-transformer';
 import { IsBoolean as IsBooleanCV } from 'class-validator';
 
-import { Base, compose } from '../core';
+import { compose, PropertyOptions } from '../core';
 
 export const IsBoolean = ({
   stringified,
   ...base
-}: Base<boolean> & { stringified?: true } = {}): PropertyDecorator =>
+}: PropertyOptions<boolean, { stringified?: true }> = {}): PropertyDecorator =>
   compose(
     { type: 'boolean' },
     base,

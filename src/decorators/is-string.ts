@@ -7,8 +7,10 @@ import {
   ValidationOptions,
 } from 'class-validator';
 
-import { Base, compose, noop } from '../core';
+import { compose, noop, PropertyOptions } from '../core';
 import { CustomValidate, CustomValidateOptions } from './utils/custom-validator';
+
+export type { CustomValidateOptions };
 
 export type DateFormat = 'date' | 'date-time';
 
@@ -32,15 +34,18 @@ export const IsString = ({
   isDate,
   customValidate,
   ...base
-}: Base<string> & {
-  canBeEmpty?: true;
-  maxLength?: number;
-  minLength?: number;
-  pattern?: { regex: RegExp; message?: ValidationOptions['message'] };
-  isEmail?: true;
-  isDate?: { format: DateFormat };
-  customValidate?: CustomValidateOptions;
-} = {}): PropertyDecorator =>
+}: PropertyOptions<
+  string,
+  {
+    canBeEmpty?: true;
+    maxLength?: number;
+    minLength?: number;
+    pattern?: { regex: RegExp; message?: ValidationOptions['message'] };
+    isEmail?: true;
+    isDate?: { format: DateFormat };
+    customValidate?: CustomValidateOptions;
+  }
+> = {}): PropertyDecorator =>
   compose(
     {
       type: 'string',

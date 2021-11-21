@@ -1,3 +1,9 @@
+export type {
+  ArrayPropertyOptions,
+  BasePropertyOptions,
+  PropertyOptions,
+  SingularPropertyOptions,
+} from './core';
 export * from './decorators/is-boolean';
 export * from './decorators/is-constant';
 export * from './decorators/is-date';

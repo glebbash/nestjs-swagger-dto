@@ -2,29 +2,42 @@ import { ApiProperty, ApiPropertyOptions } from '@nestjs/swagger';
 import { Expose, Transform } from 'class-transformer';
 import { ArrayMaxSize, ArrayMinSize, IsArray, ValidateIf } from 'class-validator';
 
-export type Base<T> = {
+export type PropertyOptions<T, CustomOptions = Record<string, never>> = BasePropertyOptions &
+  CustomOptions &
+  (SingularPropertyOptions<T> | ArrayPropertyOptions<T>);
+
+export type BasePropertyOptions = {
   name?: string;
   optional?: true;
   description?: string;
   nullable?: true;
-} & (
-  | {
-      example?: T;
-      default?: T;
-      isArray?: undefined;
-    }
-  | {
-      example?: T[];
-      default?: T[];
-      isArray: true | { minLength?: number; maxLength?: number; length?: number };
-    }
-);
+};
+
+export type SingularPropertyOptions<T> = {
+  example?: T;
+  default?: T;
+  isArray?: undefined;
+};
+
+export type ArrayPropertyOptions<T> = {
+  example?: T[];
+  default?: T[];
+  isArray: true | { minLength?: number; maxLength?: number; length?: number };
+};
 
 export const noop = (): void => undefined;
 
-export const compose = <T>(
+export const compose = <T, CustomOptions>(
   apiPropertyOptions: ApiPropertyOptions,
-  { isArray, nullable, example, optional, description, default: def, name }: Base<T>,
+  {
+    isArray,
+    nullable,
+    example,
+    optional,
+    description,
+    default: def,
+    name,
+  }: PropertyOptions<T, CustomOptions>,
   ...decorators: PropertyDecorator[]
 ): PropertyDecorator => {
   const isArrayObj = typeof isArray === 'object' ? isArray : {};

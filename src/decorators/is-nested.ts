@@ -2,7 +2,7 @@ import { ClassConstructor, Type } from 'class-transformer';
 import { IsObject, ValidateNested, ValidationArguments } from 'class-validator';
 import { noop } from 'rxjs';
 
-import { Base, compose } from '../core';
+import { compose, PropertyOptions } from '../core';
 
 const nestedFieldMessage =
   (isArray: boolean) =>
@@ -14,7 +14,7 @@ const nestedFieldMessage =
 export const IsNested = <T>({
   type,
   ...base
-}: { type: ClassConstructor<T> } & Base<T>): PropertyDecorator =>
+}: PropertyOptions<T, { type: ClassConstructor<T> }>): PropertyDecorator =>
   compose(
     { type },
     base,
