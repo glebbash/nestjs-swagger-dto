@@ -10,6 +10,7 @@ export type BasePropertyOptions = {
   name?: string;
   optional?: true;
   description?: string;
+  deprecated?: true;
   nullable?: true;
 };
 
@@ -35,6 +36,7 @@ export const compose = <T, CustomOptions>(
     example,
     optional,
     description,
+    deprecated,
     default: def,
     name,
   }: PropertyOptions<T, CustomOptions>,
@@ -62,6 +64,7 @@ export const compose = <T, CustomOptions>(
       isArray: !!isArray,
       name,
       description,
+      deprecated,
       example,
       default: def,
       required: !optional,

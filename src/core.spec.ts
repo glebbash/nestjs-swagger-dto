@@ -48,6 +48,32 @@ describe('core options', () => {
     });
   });
 
+  describe('description and depreacted properties', () => {
+    class Test {
+      @DtoDecorator({
+        description: 'Deprecated. Just a normal boolean field',
+        deprecated: true,
+      })
+      booleanField!: boolean;
+    }
+
+    it('generates correct schema', async () => {
+      expect(await generateSchemas([Test])).toStrictEqual({
+        Test: {
+          type: 'object',
+          properties: {
+            booleanField: {
+              type: 'boolean',
+              description: 'Deprecated. Just a normal boolean field',
+              deprecated: true,
+            },
+          },
+          required: ['booleanField'],
+        },
+      });
+    });
+  });
+
   describe('optional', () => {
     class Test {
       @DtoDecorator({ optional: true, meta: 'hello' })
