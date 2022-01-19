@@ -33,6 +33,7 @@ All of the decorators support the following parameters:
 | Name        | Description                                                 |
 | ----------- | ----------------------------------------------------------- |
 | description | adds description                                            |
+| deprecated  | deprecates a field                                          |
 | example     | adds example                                                |
 | name        | sets the name for serialized property                       |
 | optional    | makes property optional                                     |
