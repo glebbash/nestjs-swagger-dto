@@ -162,6 +162,12 @@ describe('IsEnum', () => {
     });
   });
 
+  describe('enum name validation', () => {
+    it('throws if enum name cannot be extracted', () => {
+      expect(() => IsEnum({ enum: () => [] })).toThrow(new Error('Invalid enum name: []'));
+    });
+  });
+
   describe('array of enums', () => {
     const AOrB = ['a', 'b'];
 
