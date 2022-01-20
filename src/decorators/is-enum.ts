@@ -58,11 +58,16 @@ function getEnumNameAndValues<T extends number | string>(
 }
 
 function getEnumNameFromFunction(e: () => unknown) {
-  const enumName = e.toString().split('=>')[1].trim();
+  const fullEnumName = e.toString().split('=>')[1].trim();
 
-  if (!/^\w+$/.test(enumName)) {
-    throw new Error(`Invalid enum name: ${enumName}`);
+  // after TS build to commonjs modules enums are
+  // replaced with {module-name}.{enum}, example gender_1.Gender
+  // So need to extract actuall enumName
+  const match = fullEnumName.match(/^(\w+\.)?(?<name>\w+)$/);
+
+  if (!match) {
+    throw new Error(`Invalid enum name: ${fullEnumName}`);
   }
 
-  return enumName;
+  return match.groups?.name;
 }
