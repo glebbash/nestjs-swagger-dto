@@ -67,6 +67,25 @@ describe('IsEnum', () => {
       enumField!: Enum;
     }
 
+    it('works with enums after TypeScript build', async () => {
+      // Emulate Enum name after TS build - module_1.TestEnum
+      const module_1 = {
+        Enum
+      }
+
+      class TestDto {
+        @IsEnum({ enum: () => module_1.Enum })
+        enumField!: Enum;
+      }
+
+      expect(await input(TestDto, { enumField: 'On' })).toStrictEqual(
+        Result.ok(make(TestDto, { enumField: Enum.On }))
+      );
+      expect(await input(TestDto, { enumField: 'Off' })).toStrictEqual(
+        Result.ok(make(TestDto, { enumField: Enum.Off }))
+      );
+    })
+
     it('generates correct schema', async () => {
       expect(await generateSchemas([Test])).toStrictEqual({
         Enum: {
