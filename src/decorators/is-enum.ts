@@ -3,27 +3,16 @@ import { IsIn } from 'class-validator';
 import { compose, PropertyOptions } from '../core';
 
 export type EnumValue<T extends number | string> = T[] | Record<string, T>;
-export type EnumOptions<T extends number | string> =
-  | { raw: EnumValue<T> }
-  | { name: string; values: EnumValue<T> }
-  | (() => EnumValue<T>);
+export type EnumOptions<T extends number | string> = Record<string, EnumValue<T>>;
 
 /**
  * Usage:
  * ```ts
  * enum OneOrTwo { One = 1, Two = 2, }
- * IsEnum({ enum: () => OneOrTwo })
+ * IsEnum({ enum: { OneOrTwo } })
  *
- * const OneOrTwo = [1, 2];
- * IsEnum({ enum: () => OneOrTwo })
- *
- * IsEnum({ enum: { name: 'OneOrTwo', values: [1, 2] } })
- *
- * IsEnum({ enum: { raw: [1, 2] } }) // Will not create a new type
+ * IsEnum({ enum: { OneOrTwo: [1, 2] } })
  * ```
- *
- * Note: Enum name is extracted from the string representation
- * of lambda function excluding `() => ` part
  */
 export const IsEnum = <T extends number | string>({
   enum: enumOptions,
@@ -31,43 +20,24 @@ export const IsEnum = <T extends number | string>({
 }: PropertyOptions<T, { enum: EnumOptions<T> }>): PropertyDecorator => {
   const { enumValues, enumName } = getEnumNameAndValues(enumOptions);
 
-  const enumValuesArray = Object.values(enumValues);
-
   return compose(
-    { type: typeof enumValuesArray[0], enum: enumValuesArray, enumName },
+    { type: typeof enumValues[0], enum: enumValues, enumName },
     base,
-    IsIn(enumValuesArray, { each: !!base.isArray })
+    IsIn(enumValues, { each: !!base.isArray })
   );
 };
 
 function getEnumNameAndValues<T extends number | string>(
   e: EnumOptions<T>
 ): {
-  enumValues: T[] | Record<string, T>;
+  enumValues: T[];
   enumName?: string;
 } {
-  if ('raw' in e) {
-    return { enumValues: e.raw };
+  const keys = Object.keys(e);
+  if (keys.length !== 1) {
+    throw new Error('EnumOptions object should have exactly one key');
   }
 
-  if (typeof e !== 'function') {
-    return { enumValues: e.values, enumName: e.name };
-  }
-
-  return { enumValues: e(), enumName: getEnumNameFromFunction(e) };
-}
-
-function getEnumNameFromFunction(e: () => unknown) {
-  const fullEnumName = e.toString().split('=>')[1].trim();
-
-  // after TS build to commonjs modules enums are
-  // replaced with {module-name}.{enum}, example gender_1.Gender
-  // So need to extract actuall enumName
-  const match = fullEnumName.match(/^(\w+\.)?(?<name>\w+)$/);
-
-  if (!match) {
-    throw new Error(`Invalid enum name: ${fullEnumName}`);
-  }
-
-  return match.groups?.name;
+  const [enumName] = keys;
+  return { enumName, enumValues: Object.values(e[enumName]) };
 }

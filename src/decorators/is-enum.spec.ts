@@ -6,7 +6,7 @@ import { IsEnum } from '../nestjs-swagger-dto';
 describe('IsEnum', () => {
   describe('array enum', () => {
     class Test {
-      @IsEnum({ enum: { name: 'OneOrTwo', values: [1, 2] } })
+      @IsEnum({ enum: { OneOrTwo: [1, 2] } })
       enumField!: 1 | 2;
     }
 
@@ -63,28 +63,9 @@ describe('IsEnum', () => {
     }
 
     class Test {
-      @IsEnum({ enum: () => Enum })
+      @IsEnum({ enum: { Enum } })
       enumField!: Enum;
     }
-
-    it('works with enums after TypeScript build', async () => {
-      // Emulate Enum name after TS build - module_1.TestEnum
-      const module_1 = {
-        Enum
-      }
-
-      class TestDto {
-        @IsEnum({ enum: () => module_1.Enum })
-        enumField!: Enum;
-      }
-
-      expect(await input(TestDto, { enumField: 'On' })).toStrictEqual(
-        Result.ok(make(TestDto, { enumField: Enum.On }))
-      );
-      expect(await input(TestDto, { enumField: 'Off' })).toStrictEqual(
-        Result.ok(make(TestDto, { enumField: Enum.Off }))
-      );
-    })
 
     it('generates correct schema', async () => {
       expect(await generateSchemas([Test])).toStrictEqual({
@@ -132,58 +113,14 @@ describe('IsEnum', () => {
     });
   });
 
-  describe('raw enum', () => {
-    class Test {
-      @IsEnum({ enum: { raw: [1, 2] } })
-      enumField!: 1 | 2;
-    }
-
-    it('generates correct schema', async () => {
-      expect(await generateSchemas([Test])).toStrictEqual({
-        Test: {
-          type: 'object',
-          properties: {
-            enumField: {
-              enum: [1, 2],
-              type: 'number',
-            },
-          },
-          required: ['enumField'],
-        },
-      });
-    });
-
-    it('accepts specified enum', async () => {
-      expect(await input(Test, { enumField: 1 })).toStrictEqual(
-        Result.ok(make(Test, { enumField: 1 }))
-      );
-      expect(await input(Test, { enumField: 2 })).toStrictEqual(
-        Result.ok(make(Test, { enumField: 2 }))
-      );
-    });
-
-    it('rejects everything else', async () => {
-      const testValues: unknown[] = [
-        { enumField: 'true' },
-        { enumField: 'false' },
-        { enumField: 0 },
-        { enumField: [] },
-        { enumField: {} },
-        { enumField: null },
-        {},
-      ];
-
-      for (const testValue of testValues) {
-        expect(await input(Test, testValue)).toStrictEqual(
-          Result.err('enumField must be one of the following values: 1, 2')
-        );
-      }
-    });
-  });
-
   describe('enum name validation', () => {
     it('throws if enum name cannot be extracted', () => {
-      expect(() => IsEnum({ enum: () => [] })).toThrow(new Error('Invalid enum name: []'));
+      expect(() => IsEnum({ enum: {} })).toThrow(
+        new Error('EnumOptions object should have exactly one key')
+      );
+      expect(() => IsEnum({ enum: { a: [1, 2, 3], b: [3, 4, 5] } })).toThrow(
+        new Error('EnumOptions object should have exactly one key')
+      );
     });
   });
 
@@ -191,7 +128,7 @@ describe('IsEnum', () => {
     const AOrB = ['a', 'b'];
 
     class Test {
-      @IsEnum({ enum: () => AOrB, isArray: true })
+      @IsEnum({ enum: { AOrB }, isArray: true })
       enumField!: ('a' | 'b')[];
     }
 
