@@ -11,8 +11,7 @@ function validateObjectSize(
     return optional;
   }
 
-  const { length } = Object.keys(obj);
-  return check(length);
+  return check(Object.keys(obj).length);
 }
 
 export const IsObject = <T extends Record<string, unknown>>({
@@ -29,7 +28,7 @@ export const IsObject = <T extends Record<string, unknown>>({
   }
 > = {}): PropertyDecorator =>
   compose(
-    { type: 'object', minProperties },
+    { type: 'object', minProperties, maxProperties },
     base,
     IsObjectCV({ each: !!base.isArray, message }),
     minProperties
