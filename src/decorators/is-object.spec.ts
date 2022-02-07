@@ -59,6 +59,103 @@ describe('IsObject', () => {
       expect(await input(Test, { objectField: false })).toStrictEqual(
         Result.err('objectField must be an object')
       );
+      expect(await input(Test, { objectField: undefined })).toStrictEqual(
+        Result.err('objectField must be an object')
+      );
+      expect(await input(Test, { objectField: null })).toStrictEqual(
+        Result.err('objectField must be an object')
+      );
+    });
+
+    it('checks maxProperties', async () => {
+      class Test {
+        @IsObject({ maxProperties: 1 })
+        objectField!: Record<string, unknown>;
+      }
+
+      expect(await input(Test, { objectField: { a: 1 } })).toStrictEqual(
+        Result.ok(make(Test, { objectField: { a: 1 } }))
+      );
+      expect(await input(Test, { objectField: { a: 1, b: 2 } })).toStrictEqual(
+        Result.err('objectField must have at most 1 properties')
+      );
+      expect(await input(Test, { objectField: false })).toStrictEqual(
+        Result.err('objectField must be an object')
+      );
+      expect(await input(Test, { objectField: undefined })).toStrictEqual(
+        Result.err('objectField must be an object')
+      );
+      expect(await input(Test, { objectField: null })).toStrictEqual(
+        Result.err('objectField must be an object')
+      );
+    });
+
+    it('works with minProperties && nullable', async () => {
+      class Test {
+        @IsObject({ minProperties: 1, nullable: true })
+        objectField!: Record<string, unknown> | null;
+      }
+
+      expect(await input(Test, { objectField: { a: 1 } })).toStrictEqual(
+        Result.ok(make(Test, { objectField: { a: 1 } }))
+      );
+      expect(await input(Test, { objectField: undefined })).toStrictEqual(
+        Result.err('objectField must be an object')
+      );
+      expect(await input(Test, { objectField: null })).toStrictEqual(
+        Result.ok(make(Test, { objectField: null }))
+      );
+    });
+
+    it('works with minProperties && optional', async () => {
+      class Test {
+        @IsObject({ minProperties: 1, optional: true })
+        objectField?: Record<string, unknown>;
+      }
+
+      expect(await input(Test, { objectField: { a: 1 } })).toStrictEqual(
+        Result.ok(make(Test, { objectField: { a: 1 } }))
+      );
+      expect(await input(Test, { objectField: undefined })).toStrictEqual(
+        Result.ok(make(Test, {}))
+      );
+      expect(await input(Test, { objectField: null })).toStrictEqual(
+        Result.err('objectField must be an object')
+      );
+    });
+
+    it('works with maxProperties && nullable', async () => {
+      class Test {
+        @IsObject({ maxProperties: 1, nullable: true })
+        objectField!: Record<string, unknown> | null;
+      }
+
+      expect(await input(Test, { objectField: { a: 1 } })).toStrictEqual(
+        Result.ok(make(Test, { objectField: { a: 1 } }))
+      );
+      expect(await input(Test, { objectField: undefined })).toStrictEqual(
+        Result.err('objectField must be an object')
+      );
+      expect(await input(Test, { objectField: null })).toStrictEqual(
+        Result.ok(make(Test, { objectField: null }))
+      );
+    });
+
+    it('works with maxProperties && optional', async () => {
+      class Test {
+        @IsObject({ maxProperties: 1, optional: true })
+        objectField?: Record<string, unknown>;
+      }
+
+      expect(await input(Test, { objectField: { a: 1 } })).toStrictEqual(
+        Result.ok(make(Test, { objectField: { a: 1 } }))
+      );
+      expect(await input(Test, { objectField: undefined })).toStrictEqual(
+        Result.ok(make(Test, {}))
+      );
+      expect(await input(Test, { objectField: null })).toStrictEqual(
+        Result.err('objectField must be an object')
+      );
     });
   });
 
