@@ -59,6 +59,12 @@ describe('IsObject', () => {
       expect(await input(Test, { objectField: false })).toStrictEqual(
         Result.err('objectField must be an object')
       );
+      expect(await input(Test, { objectField: undefined })).toStrictEqual(
+        Result.err('objectField must be an object')
+      );
+      expect(await input(Test, { objectField: null })).toStrictEqual(
+        Result.err('objectField must be an object')
+      );
     });
 
     it('checks maxProperties', async () => {

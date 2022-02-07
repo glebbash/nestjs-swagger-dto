@@ -2,6 +2,19 @@ import { IsObject as IsObjectCV, ValidateBy } from 'class-validator';
 
 import { compose, noop, PropertyOptions } from '../core';
 
+function validateObjectSize(
+  obj: Record<string, unknown> | undefined | null,
+  check: (len: number) => boolean,
+  optional = true
+): boolean {
+  if (!obj) {
+    return optional;
+  }
+
+  const { length } = Object.keys(obj);
+  return check(length);
+}
+
 export const IsObject = <T extends Record<string, unknown>>({
   message,
   minProperties,
@@ -23,7 +36,12 @@ export const IsObject = <T extends Record<string, unknown>>({
       ? ValidateBy({
           name: 'minProperties',
           validator: {
-            validate: (v) => Object.keys(v).length >= minProperties,
+            validate: (v) =>
+              validateObjectSize(
+                v,
+                (length) => length >= minProperties,
+                base.optional || base.nullable
+              ),
             defaultMessage: (args) =>
               `${args?.property} must have at least ${minProperties} properties`,
           },
@@ -31,12 +49,17 @@ export const IsObject = <T extends Record<string, unknown>>({
       : noop,
     maxProperties
       ? ValidateBy({
-        name: 'maxProperties',
-        validator: {
-          validate: (v) => Object.keys(v).length <= maxProperties,
-          defaultMessage: (args) =>
-            `${args?.property} must have at most ${maxProperties} properties`,
-        },
-      })
-      : noop,
+          name: 'maxProperties',
+          validator: {
+            validate: (v) =>
+              validateObjectSize(
+                v,
+                (length) => length <= maxProperties,
+                base.optional || base.nullable
+              ),
+            defaultMessage: (args) =>
+              `${args?.property} must have at most ${maxProperties} properties`,
+          },
+        })
+      : noop
   );
