@@ -4,11 +4,10 @@ import { compose, noop, PropertyOptions } from '../core';
 
 function validateObjectSize(
   obj: Record<string, unknown> | undefined | null,
-  check: (len: number) => boolean,
-  optional = true
+  check: (len: number) => boolean
 ): boolean {
   if (!obj) {
-    return optional;
+    return true;
   }
 
   return check(Object.keys(obj).length);
@@ -35,12 +34,7 @@ export const IsObject = <T extends Record<string, unknown>>({
       ? ValidateBy({
           name: 'minProperties',
           validator: {
-            validate: (v) =>
-              validateObjectSize(
-                v,
-                (length) => length >= minProperties,
-                base.optional || base.nullable
-              ),
+            validate: (v) => validateObjectSize(v, (length) => length >= minProperties),
             defaultMessage: (args) =>
               `${args?.property} must have at least ${minProperties} properties`,
           },
@@ -50,12 +44,7 @@ export const IsObject = <T extends Record<string, unknown>>({
       ? ValidateBy({
           name: 'maxProperties',
           validator: {
-            validate: (v) =>
-              validateObjectSize(
-                v,
-                (length) => length <= maxProperties,
-                base.optional || base.nullable
-              ),
+            validate: (v) => validateObjectSize(v, (length) => length <= maxProperties),
             defaultMessage: (args) =>
               `${args?.property} must have at most ${maxProperties} properties`,
           },
