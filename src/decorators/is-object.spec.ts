@@ -60,6 +60,23 @@ describe('IsObject', () => {
         Result.err('objectField must be an object')
       );
     });
+
+    it('checks maxProperties', async () => {
+      class Test {
+        @IsObject({ maxProperties: 1 })
+        objectField!: Record<string, unknown>;
+      }
+
+      expect(await input(Test, { objectField: { a: 1 } })).toStrictEqual(
+        Result.ok(make(Test, { objectField: { a: 1 } }))
+      );
+      expect(await input(Test, { objectField: { a: 1, b: 2 } })).toStrictEqual(
+        Result.err('objectField must have at most 1 properties')
+      );
+      expect(await input(Test, { objectField: false })).toStrictEqual(
+        Result.err('objectField must be an object')
+      );
+    });
   });
 
   describe('array', () => {

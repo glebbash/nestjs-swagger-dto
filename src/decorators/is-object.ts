@@ -5,12 +5,14 @@ import { compose, noop, PropertyOptions } from '../core';
 export const IsObject = <T extends Record<string, unknown>>({
   message,
   minProperties,
+  maxProperties,
   ...base
 }: PropertyOptions<
   T,
   {
     message?: string;
     minProperties?: number;
+    maxProperties?: number;
   }
 > = {}): PropertyDecorator =>
   compose(
@@ -26,5 +28,15 @@ export const IsObject = <T extends Record<string, unknown>>({
               `${args?.property} must have at least ${minProperties} properties`,
           },
         })
-      : noop
+      : noop,
+    maxProperties
+      ? ValidateBy({
+        name: 'maxProperties',
+        validator: {
+          validate: (v) => Object.keys(v).length <= maxProperties,
+          defaultMessage: (args) =>
+            `${args?.property} must have at most ${maxProperties} properties`,
+        },
+      })
+      : noop,
   );
