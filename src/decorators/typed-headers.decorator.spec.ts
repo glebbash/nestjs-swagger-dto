@@ -27,10 +27,7 @@ export class TestHeaders {
 @Controller({ path: 'test', version: '1' })
 export class TestController {
   @Get()
-  async test(
-    // @Headers() @HeaderSchema(TransactionHeaders) headers: TransactionHeaders,
-    @TypedHeaders() headers: TestHeaders
-  ): Promise<string> {
+  async test(@TypedHeaders() headers: TestHeaders): Promise<string> {
     return headers.countryCode;
   }
 }
@@ -74,5 +71,24 @@ describe('TypedHeaders decorator', () => {
         ],
         error: 'Bad Request',
       });
+  });
+
+  it('fails when emitDecoratorMetadata is disabled', async () => {
+    expect(() => {
+      jest.spyOn(Reflect, 'getOwnMetadata').mockReturnValue(undefined);
+
+      @Controller({ path: 'test', version: '1' })
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      class TestControllerWithoutEmitDecoratorMetadata {
+        @Get()
+        async test(@TypedHeaders() headers: TestHeaders): Promise<string> {
+          return headers.countryCode;
+        }
+      }
+    }).toThrow(
+      new Error(
+        'Type metadata not found. See https://www.typescriptlang.org/docs/handbook/decorators.html#metadata'
+      )
+    );
   });
 });
