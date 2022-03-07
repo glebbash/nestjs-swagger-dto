@@ -42,6 +42,37 @@ All of the decorators support the following parameters:
 
 Also decorators have additional parameters like: `min`, `max` for `IsNumber`.
 
+### Headers validation
+
+You can also validate request headers using `TypedHeaders` decorator.
+
+```ts
+export class TestHeaders {
+  @IsString({
+    // Note: header names will be lowercased automatically
+    name: 'country-code',
+    maxLength: 2,
+    minLength: 2,
+    example: 'US',
+  })
+  countryCode!: string;
+
+  @IsString({
+    isDate: { format: 'date-time' },
+    name: 'timestamp',
+  })
+  timestamp!: string;
+}
+
+@Controller({ path: 'test', version: '1' })
+export class TestController {
+  @Get()
+  async test(@TypedHeaders() headers: TestHeaders): Promise<string> {
+    return headers.countryCode;
+  }
+}
+```
+
 ## Other
 
 Bootstrapped with: [create-ts-lib-gh](https://github.com/glebbash/create-ts-lib-gh)
