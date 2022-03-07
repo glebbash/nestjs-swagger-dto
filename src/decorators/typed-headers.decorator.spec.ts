@@ -2,12 +2,10 @@ import { Controller, Get, INestApplication } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
 import request from 'supertest';
 
-import { IsString } from './is-string';
-import { TypedHeaders } from './typed-headers.decorator';
+import { IsString, TypedHeaders } from '../nestjs-swagger-dto';
 
 export class TestHeaders {
   @IsString({
-    description: '[ISO_3166-1_alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)',
     name: 'country-code',
     maxLength: 2,
     minLength: 2,
@@ -17,8 +15,6 @@ export class TestHeaders {
 
   @IsString({
     isDate: { format: 'date-time' },
-    example: '2011-12-01T00:00:00.000Z',
-    description: '[ISO 8601](https://en.wikipedia.org/wiki/ISO_8601)',
     name: 'timestamp',
   })
   timestamp!: string;
