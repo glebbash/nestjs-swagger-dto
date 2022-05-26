@@ -1,7 +1,7 @@
-import { Type } from '@nestjs/common';
+import { INestApplication, Type } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import {
+import type {
   ReferenceObject,
   SchemaObject,
 } from '@nestjs/swagger/dist/interfaces/open-api-spec.interface';
@@ -47,7 +47,7 @@ export async function generateSchemas(
   class AppModule {}
 
   const spec = SwaggerModule.createDocument(
-    (await NestFactory.createApplicationContext(AppModule, { logger: false })) as never,
+    await NestFactory.create<INestApplication>(AppModule, { logger: false }),
     new DocumentBuilder().build(),
     { extraModels: models }
   );

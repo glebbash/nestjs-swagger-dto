@@ -8,10 +8,10 @@
     "swagger",
     "dto"
   ],
-  "main": "dist/nestjs-swagger-dto.js",
-  "types": "dist/nestjs-swagger-dto.d.ts",
+  "main": "lib/nestjs-swagger-dto.js",
+  "types": "lib/nestjs-swagger-dto.d.ts",
   "files": [
-    "dist"
+    "lib"
   ],
   "author": "glebbash <glebbash@gmail.com>",
   "repository": {
@@ -24,7 +24,7 @@
   },
   "scripts": {
     "lint": "eslint --fix 'src/**/*.ts'",
-    "prebuild": "rimraf dist",
+    "prebuild": "rimraf lib",
     "build": "tsc --project tsconfig.build.json",
     "build:docs": "typedoc --out docs src/nestjs-swagger-dto.ts",
     "test": "jest --coverage",
@@ -41,33 +41,33 @@
     ]
   },
   "peerDependencies": {
-    "@nestjs/swagger": ">=5.1",
-    "class-transformer": ">=0.4",
-    "class-validator": ">=0.13"
+    "@nestjs/swagger": ">= 5",
+    "class-transformer": ">= 0.5",
+    "class-validator": ">= 0.13"
   },
   "devDependencies": {
-    "@commitlint/cli": "14.1.0",
-    "@commitlint/config-conventional": "14.1.0",
+    "@commitlint/cli": "17.0.1",
+    "@commitlint/config-conventional": "17.0.0",
     "@nestjs/common": "^8.4.5",
     "@nestjs/core": "^8.4.5",
     "@nestjs/platform-express": "^8.4.5",
     "@nestjs/swagger": "^5.2.1",
     "@nestjs/testing": "^8.4.5",
-    "@types/jest": "27.0.2",
-    "@types/node": "^16.11.36",
+    "@types/jest": "27.5.1",
+    "@types/node": "^17.0.35",
     "@types/supertest": "^2.0.12",
-    "@typescript-eslint/eslint-plugin": "^5.25.0",
-    "@typescript-eslint/parser": "^5.25.0",
-    "class-transformer": "^0.4.0",
+    "@typescript-eslint/eslint-plugin": "^5.26.0",
+    "@typescript-eslint/parser": "^5.26.0",
+    "class-transformer": "^0.5.1",
     "class-validator": "^0.13.2",
-    "eslint": "^8.15.0",
+    "eslint": "^8.16.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-simple-import-sort": "^7.0.0",
-    "husky": "^7.0.4",
-    "jest": "27.3.1",
-    "jest-config": "27.3.1",
-    "lint-staged": "^11.2.6",
+    "husky": "^8.0.1",
+    "jest": "28.1.0",
+    "jest-config": "28.1.0",
+    "lint-staged": "^12.4.2",
     "prettier": "^2.6.2",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
@@ -75,9 +75,9 @@
     "semantic-release": "^19.0.2",
     "supertest": "^6.2.3",
     "true-myth": "^4.1.1",
-    "ts-jest": "^27.1.4",
-    "ts-node": "^10.7.0",
+    "ts-jest": "^28.0.3",
+    "ts-node": "^10.8.0",
     "typedoc": "^0.22.15",
-    "typescript": "^4.6.4"
+    "typescript": "^4.7.2"
   }
 }

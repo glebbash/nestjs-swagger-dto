@@ -11,8 +11,9 @@
     "allowSyntheticDefaultImports": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
-    "outDir": "dist",
+    "outDir": "lib",
     "esModuleInterop": true,
+    "skipLibCheck": true
   },
   "include": [
     "src"
