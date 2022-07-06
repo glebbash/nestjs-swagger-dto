@@ -1,12 +1,17 @@
 import { Result } from 'true-myth';
 
-import { input, make } from '../../tests/helpers';
+import { input, make, output } from '../../tests/helpers';
 import { IsDate } from '../nestjs-swagger-dto';
 
 describe('IsDate', () => {
   describe('single date', () => {
     class Test {
       @IsDate({ format: 'date' })
+      date!: Date;
+    }
+
+    class TestSerialize {
+      @IsDate({ format: 'date', serialize: true })
       date!: Date;
     }
 
@@ -29,12 +34,39 @@ describe('IsDate', () => {
         Result.err('date is not formatted as `yyyy-mm-dd`')
       );
     });
+
+    it('transforms to date formatted string', async () => {
+      const dateToUse = new Date();
+      const obj = new TestSerialize();
+      obj.date = dateToUse;
+
+      expect(await output(obj)).toStrictEqual({ date: dateToUse.toISOString().slice(0, 10) });
+    });
+
+    it('pass through when field is undefined', async () => {
+      const obj = new TestSerialize();
+
+      expect(await output(obj)).toStrictEqual({});
+    });
+
+    it('pass through value if no serialize', async () => {
+      const dateToUse = new Date();
+      const obj = new Test();
+      obj.date = dateToUse;
+
+      expect(await output(obj)).toStrictEqual({ date: dateToUse });
+    });
   });
 
   describe('single date-time', () => {
     class Test {
       @IsDate({ format: 'date-time' })
-      date!: Date;
+      date?: Date;
+    }
+
+    class TestSerialize {
+      @IsDate({ format: 'date-time', serialize: true })
+      date?: Date;
     }
 
     it('accepts date-time', async () => {
@@ -55,6 +87,28 @@ describe('IsDate', () => {
       expect(await input(Test, { date: '2011/12/02' })).toStrictEqual(
         Result.err('date is not ISO8601 format')
       );
+    });
+
+    it('transforms to ISO formatted string', async () => {
+      const dateToUse = new Date();
+      const obj = new TestSerialize();
+      obj.date = dateToUse;
+
+      expect(await output(obj)).toStrictEqual({ date: dateToUse.toISOString() });
+    });
+
+    it('pass through when field is undefined', async () => {
+      const obj = new TestSerialize();
+
+      expect(await output(obj)).toStrictEqual({});
+    });
+
+    it('pass through value if no serialize', async () => {
+      const dateToUse = new Date();
+      const obj = new Test();
+      obj.date = dateToUse;
+
+      expect(await output(obj)).toStrictEqual({ date: dateToUse });
     });
   });
 });
