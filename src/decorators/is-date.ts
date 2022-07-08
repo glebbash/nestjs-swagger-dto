@@ -1,7 +1,8 @@
-import { Transform, TransformationType } from 'class-transformer';
+import { TransformationType, TransformFnParams } from 'class-transformer';
 import { IsDate as IsDateCV, isDateString } from 'class-validator';
 
 import { compose, PropertyOptions } from '../core';
+import { TransformHandlingOptional } from './utils/transform-handling-optional';
 
 const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
 
@@ -13,17 +14,13 @@ export const IsDate = ({
   compose(
     { type: 'string', format },
     base,
-    format === 'date' ? TransformDate : TransformDateTime,
+    TransformHandlingOptional(base, format === 'date' ? transformDate : transformDateTime),
     IsDateCV({ message: ({ value }) => value?.message })
   );
 
-const TransformDate = Transform(({ key, value, type }) => {
-  if (value === undefined) {
-    return new Error(`${key} does not exist`);
-  }
-
+function transformDate({ key, value, type }: TransformFnParams) {
   if (type === TransformationType.CLASS_TO_PLAIN) {
-    return stripTime(value.toISOString());
+    return value.toISOString().split('T')[0];
   }
 
   if (!dateRegex.test(value)) {
@@ -36,13 +33,9 @@ const TransformDate = Transform(({ key, value, type }) => {
   }
 
   return date;
-});
+}
 
-const TransformDateTime = Transform(({ key, value, type }) => {
-  if (value === undefined) {
-    return new Error(`${key} does not exist`);
-  }
-
+function transformDateTime({ key, value, type }: TransformFnParams) {
   if (type === TransformationType.CLASS_TO_PLAIN) {
     return value.toISOString();
   }
@@ -52,8 +45,4 @@ const TransformDateTime = Transform(({ key, value, type }) => {
   }
 
   return new Date(value);
-});
-
-function stripTime(isoDate: string) {
-  return isoDate.split('T')[0];
 }

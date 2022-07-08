@@ -61,7 +61,21 @@ describe('IsDate', () => {
       const dto = make(TestOptional, {});
       expect(output(dto)).toStrictEqual({});
 
-      expect(await input(Test, {})).toStrictEqual(Result.ok(make(TestOptional, {})));
+      expect(await input(TestOptional, {})).toStrictEqual(Result.ok(make(TestOptional, {})));
+    });
+
+    it('works with nullable fields', async () => {
+      class TestNullable {
+        @IsDate({ format: 'date', nullable: true })
+        date!: Date | null;
+      }
+
+      const dto = make(TestNullable, { date: null });
+      expect(output(dto)).toStrictEqual({ date: null });
+
+      expect(await input(TestNullable, { date: null })).toStrictEqual(
+        Result.ok(make(TestNullable, { date: null }))
+      );
     });
   });
 
@@ -123,6 +137,20 @@ describe('IsDate', () => {
       expect(output(dto)).toStrictEqual({});
 
       expect(await input(TestOptional, {})).toStrictEqual(Result.ok(make(TestOptional, {})));
+    });
+
+    it('works with nullable fields', async () => {
+      class TestNullable {
+        @IsDate({ format: 'date-time', nullable: true })
+        date!: Date | null;
+      }
+
+      const dto = make(TestNullable, { date: null });
+      expect(output(dto)).toStrictEqual({ date: null });
+
+      expect(await input(TestNullable, { date: null })).toStrictEqual(
+        Result.ok(make(TestNullable, { date: null }))
+      );
     });
   });
 });
