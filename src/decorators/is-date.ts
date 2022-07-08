@@ -42,16 +42,16 @@ const isDate = (format: 'date' | 'date-time') => format === 'date';
 /***
  * Date-decorator used for deserializing and serializing dates.
  * @param format Either 'date' or 'date-time'. The value determines what kind of validations and transformations to apply.
- * @param serialize If not set, only input is transformed. If set to `true`, output is a date or date-time formatted string.
+ * @param formatOutput If not set, only input is transformed. If set to `true`, output is a date or date-time formatted string depending on format
  * @param base
  * @constructor
  */
 export const IsDate = ({
   format,
-  serialize,
+  formatOutput,
   ...base
 }: Omit<
-  PropertyOptions<Date, { format: 'date' | 'date-time'; serialize?: true }>,
+  PropertyOptions<Date, { format: 'date' | 'date-time'; formatOutput?: true }>,
   'isArray'
 >): PropertyDecorator => {
   return compose(
@@ -63,7 +63,7 @@ export const IsDate = ({
       return isDate(format) ? TransformDate(params) : TransformDateTime(params);
     }),
     TransformToPlain(({ value }) => {
-      if (!serialize) return value;
+      if (!formatOutput) return value;
 
       if (!value) return undefined;
 

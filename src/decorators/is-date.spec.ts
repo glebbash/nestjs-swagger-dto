@@ -11,7 +11,7 @@ describe('IsDate', () => {
     }
 
     class TestDateOutput {
-      @IsDate({ format: 'date', optional: true, serialize: true })
+      @IsDate({ format: 'date', optional: true, formatOutput: true })
       date?: Date;
     }
 
@@ -21,7 +21,7 @@ describe('IsDate', () => {
     }
 
     class TestDateTimeOutput {
-      @IsDate({ format: 'date', optional: true, serialize: true })
+      @IsDate({ format: 'date', optional: true, formatOutput: true })
       date?: Date;
     }
 
@@ -73,7 +73,7 @@ describe('IsDate', () => {
 
       describe('output', () => {
         class TestOutput {
-          @IsDate({ format: 'date', serialize: true })
+          @IsDate({ format: 'date', formatOutput: true })
           date!: Date;
         }
 
@@ -127,7 +127,7 @@ describe('IsDate', () => {
 
       describe('output', () => {
         class TestOutput {
-          @IsDate({ format: 'date-time', serialize: true })
+          @IsDate({ format: 'date-time', formatOutput: true })
           date!: Date;
         }
 
