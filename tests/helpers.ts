@@ -35,6 +35,19 @@ export function output<T>(instance: T): T {
   }) as T;
 }
 
+export async function outputValidate<T extends Record<string, any>>(
+  instance: T
+): Promise<Result<T, string>> {
+  const res: T = output(instance);
+  const errors = await validate(res, {
+    whitelist: true,
+    forbidNonWhitelisted: true,
+    forbidUnknownValues: true,
+  });
+
+  return errors.length === 0 ? Result.ok(res) : Result.err(getValidationError(errors[0]));
+}
+
 function getValidationError(error: ValidationError): string {
   return error.constraints
     ? Object.values(error.constraints)[0]

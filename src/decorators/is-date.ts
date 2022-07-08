@@ -57,15 +57,18 @@ export const IsDate = ({
   return compose(
     { type: 'string', format },
     base,
-    TransformToClass((params) =>
-      isDate(format) ? TransformDate(params) : TransformDateTime(params)
-    ),
+    TransformToClass((params) => {
+      if (base.optional && !params.value) return undefined;
+
+      return isDate(format) ? TransformDate(params) : TransformDateTime(params);
+    }),
     TransformToPlain(({ value }) => {
       if (!serialize) return value;
 
       if (!value) return undefined;
 
-      return isDate(format) ? value.toISOString().slice(0, 10) : value.toISOString();
+      const isoDate = value.toISOString();
+      return isDate(format) ? isoDate.slice(0, 10) : isoDate;
     }),
     IsDateCV({ message: ({ value }) => value.message })
   );
