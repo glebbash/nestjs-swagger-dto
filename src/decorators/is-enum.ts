@@ -1,3 +1,4 @@
+import { getSchemaPath } from '@nestjs/swagger';
 import { IsIn } from 'class-validator';
 
 import { compose, PropertyOptions } from '../core';
@@ -18,10 +19,19 @@ export const IsEnum = <T extends number | string>({
   enum: enumOptions,
   ...base
 }: PropertyOptions<T, { enum: EnumOptions<T> }>): PropertyDecorator => {
-  const { enumValues, enumName } = getEnumNameAndValues(enumOptions);
+  const { enumName, enumValues } = getEnumNameAndValues(enumOptions);
+
+  const enumNameOptions =
+    base.isArray && enumName
+      ? {
+          items: {
+            $ref: getSchemaPath(enumName),
+          },
+        }
+      : { enumName };
 
   return compose(
-    { type: typeof enumValues[0], enum: enumValues, enumName },
+    { type: base.isArray ? 'array' : typeof enumValues[0], enum: enumValues, ...enumNameOptions },
     base,
     IsIn(enumValues, { each: !!base.isArray })
   );
