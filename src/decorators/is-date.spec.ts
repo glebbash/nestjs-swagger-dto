@@ -82,7 +82,7 @@ describe('IsDate', () => {
       const DEFAULT_DATE = new Date();
       const DEFAULT_DATE_STR = DEFAULT_DATE.toISOString().split('T')[0];
 
-      class TestOptional {
+      class TestDefault {
         @IsDate({
           format: 'date',
           optional: true,
@@ -93,8 +93,8 @@ describe('IsDate', () => {
       }
 
       it('generates correct schema', async () => {
-        expect(await generateSchemas([TestOptional])).toStrictEqual({
-          TestOptional: {
+        expect(await generateSchemas([TestDefault])).toStrictEqual({
+          TestDefault: {
             type: 'object',
             properties: {
               date: {
@@ -109,11 +109,11 @@ describe('IsDate', () => {
       });
 
       it('transforms to and from plain', async () => {
-        const dto = make(TestOptional, {});
+        const dto = make(TestDefault, {});
         expect(output(dto)).toStrictEqual({ date: DEFAULT_DATE_STR });
 
-        expect(await input(TestOptional, {})).toStrictEqual(
-          Result.ok(make(TestOptional, { date: new Date(DEFAULT_DATE_STR) }))
+        expect(await input(TestDefault, {})).toStrictEqual(
+          Result.ok(make(TestDefault, { date: new Date(DEFAULT_DATE_STR) }))
         );
       });
     });
@@ -196,7 +196,7 @@ describe('IsDate', () => {
     describe('with default value', () => {
       const DEFAULT_DATE = new Date();
 
-      class TestOptional {
+      class TestDefault {
         @IsDate({
           format: 'date-time',
           optional: true,
@@ -207,8 +207,8 @@ describe('IsDate', () => {
       }
 
       it('generates correct schema', async () => {
-        expect(await generateSchemas([TestOptional])).toStrictEqual({
-          TestOptional: {
+        expect(await generateSchemas([TestDefault])).toStrictEqual({
+          TestDefault: {
             type: 'object',
             properties: {
               date: {
@@ -223,11 +223,11 @@ describe('IsDate', () => {
       });
 
       it('transforms to and from plain', async () => {
-        const dto = make(TestOptional, {});
+        const dto = make(TestDefault, {});
         expect(output(dto)).toStrictEqual({ date: DEFAULT_DATE.toISOString() });
 
-        expect(await input(TestOptional, {})).toStrictEqual(
-          Result.ok(make(TestOptional, { date: DEFAULT_DATE }))
+        expect(await input(TestDefault, {})).toStrictEqual(
+          Result.ok(make(TestDefault, { date: DEFAULT_DATE }))
         );
       });
     });
