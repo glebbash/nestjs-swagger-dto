@@ -77,6 +77,46 @@ describe('IsDate', () => {
         Result.ok(make(TestNullable, { date: null }))
       );
     });
+
+    describe('with default value', () => {
+      const DEFAULT_DATE = new Date();
+      const DEFAULT_DATE_STR = DEFAULT_DATE.toISOString().split('T')[0];
+
+      class TestOptional {
+        @IsDate({
+          format: 'date',
+          optional: true,
+          example: [DEFAULT_DATE, DEFAULT_DATE],
+          default: DEFAULT_DATE,
+        })
+        date?: Date;
+      }
+
+      it('generates correct schema', async () => {
+        expect(await generateSchemas([TestOptional])).toStrictEqual({
+          TestOptional: {
+            type: 'object',
+            properties: {
+              date: {
+                type: 'string',
+                format: 'date',
+                default: DEFAULT_DATE_STR,
+                example: [DEFAULT_DATE_STR, DEFAULT_DATE_STR],
+              },
+            },
+          },
+        });
+      });
+
+      it('transforms to and from plain', async () => {
+        const dto = make(TestOptional, {});
+        expect(output(dto)).toStrictEqual({ date: DEFAULT_DATE_STR });
+
+        expect(await input(TestOptional, {})).toStrictEqual(
+          Result.ok(make(TestOptional, { date: new Date(DEFAULT_DATE_STR) }))
+        );
+      });
+    });
   });
 
   describe('single date-time', () => {
@@ -151,6 +191,45 @@ describe('IsDate', () => {
       expect(await input(TestNullable, { date: null })).toStrictEqual(
         Result.ok(make(TestNullable, { date: null }))
       );
+    });
+
+    describe('with default value', () => {
+      const DEFAULT_DATE = new Date();
+
+      class TestOptional {
+        @IsDate({
+          format: 'date-time',
+          optional: true,
+          example: DEFAULT_DATE,
+          default: DEFAULT_DATE,
+        })
+        date?: Date;
+      }
+
+      it('generates correct schema', async () => {
+        expect(await generateSchemas([TestOptional])).toStrictEqual({
+          TestOptional: {
+            type: 'object',
+            properties: {
+              date: {
+                type: 'string',
+                format: 'date-time',
+                default: DEFAULT_DATE.toISOString(),
+                example: DEFAULT_DATE.toISOString(),
+              },
+            },
+          },
+        });
+      });
+
+      it('transforms to and from plain', async () => {
+        const dto = make(TestOptional, {});
+        expect(output(dto)).toStrictEqual({ date: DEFAULT_DATE.toISOString() });
+
+        expect(await input(TestOptional, {})).toStrictEqual(
+          Result.ok(make(TestOptional, { date: DEFAULT_DATE }))
+        );
+      });
     });
   });
 });
