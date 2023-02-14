@@ -27,6 +27,7 @@ This library contains the following decorators
 | IsNumber   | numbers                       |
 | IsObject   | typed plain js objects        |
 | IsString   | strings                       |
+| IsUnknown  | any json value                |
 
 All of the decorators support the following parameters:
 
