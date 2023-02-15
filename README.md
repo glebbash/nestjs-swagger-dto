@@ -7,6 +7,60 @@
 
 This library combines common `@nestjs/swagger`, `class-transformer` and `class-validator` decorators that are used together into one decorator for full Nest.js DTO lifecycle including OpenAPI schema descriptions.
 
+DTO without `nestjs-swagger-dto`:
+
+```ts
+import { ApiProperty } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
+import { IsOptional, IsString, MaxLength, MinLength, ValidateNested } from 'class-validator';
+
+export class RoleDto {
+  @IsOptional()
+  @IsString()
+  @MinLength(3)
+  @MaxLength(256)
+  name?: string;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(256)
+  description?: string;
+
+  @ApiProperty({ enum: RoleStatus, enumName: 'RoleStatus' })
+  status!: RoleStatus;
+
+  @ValidateNested({ each: true })
+  @Type(() => PermissionDto)
+  @ApiProperty({ type: [PermissionDto] })
+  permissions!: PermissionDto[];
+}
+
+```
+
+DTO with `nestjs-swagger-dto`:
+
+```ts
+import { IsEnum, IsNested, IsString } from 'nestjs-swagger-dto';
+
+class RoleDto {
+  @IsString({
+    optional: true,
+    minLength: 3,
+    maxLength: 256,
+  })
+  name?: string;
+
+  @IsString({ optional: true, maxLength: 255 })
+  description?: string;
+
+  @IsEnum({ enum: { RoleStatus } })
+  status!: RoleStatus;
+
+  @IsNested({ type: PermissionDto, isArray: true })
+  permissions!: PermissionDto[];
+}
+```
+
 ## Installation
 
 ```sh

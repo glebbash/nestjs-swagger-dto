@@ -1,6 +1,6 @@
 import { Result } from 'true-myth';
 
-import { input, make } from '../../tests/helpers';
+import { generateSchemas, input, make, output } from '../../tests/helpers';
 import { IsNumber } from '../nestjs-swagger-dto';
 
 describe('IsNumber', () => {
@@ -129,6 +129,57 @@ describe('IsNumber', () => {
       for (const testValue of testValues) {
         expect(await input(Test, testValue)).toStrictEqual(
           Result.err('numberField must be a number conforming to the specified constraints')
+        );
+      }
+    });
+  });
+
+  describe('integer', () => {
+    class Test {
+      @IsNumber({ type: 'integer', format: 'int32' })
+      integerField!: number;
+    }
+
+    it('generates correct schema', async () => {
+      expect(await generateSchemas([Test])).toStrictEqual({
+        Test: {
+          type: 'object',
+          properties: {
+            integerField: {
+              type: 'integer',
+              format: 'int32',
+            },
+          },
+          required: ['integerField'],
+        },
+      });
+    });
+
+    it('transforms to plain without converting floats to ints', async () => {
+      const dto = make(Test, { integerField: 10.5 });
+      expect(output(dto)).toStrictEqual({ integerField: 10.5 });
+    });
+
+    it('accepts integers', async () => {
+      expect(await input(Test, { integerField: 10 })).toStrictEqual(
+        Result.ok(make(Test, { integerField: 10 }))
+      );
+    });
+
+    it('rejects everything else', async () => {
+      const testValues: unknown[] = [
+        { integerField: 10.5 },
+        { integerField: 'true' },
+        { integerField: 'false' },
+        { integerField: [] },
+        { integerField: {} },
+        { integerField: null },
+        {},
+      ];
+
+      for (const testValue of testValues) {
+        expect(await input(Test, testValue)).toStrictEqual(
+          Result.err('integerField must be a number conforming to the specified constraints')
         );
       }
     });
