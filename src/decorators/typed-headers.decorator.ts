@@ -1,16 +1,19 @@
 import {
-  BadRequestException,
   createParamDecorator,
   ExecutionContext,
   Headers,
   Type,
+  ValidationPipe,
 } from '@nestjs/common';
-import { plainToClass } from 'class-transformer';
-import { validateOrReject, ValidationError } from 'class-validator';
+
+export type TypedHeadersOptions = {
+  validationPipe?: ValidationPipe;
+};
 
 export const TypedHeaders =
+  (options?: TypedHeadersOptions) =>
   // eslint-disable-next-line @typescript-eslint/ban-types
-  () => (target: Object, propertyKey: string | symbol, parameterIndex: number) => {
+  (target: Object, propertyKey: string | symbol, parameterIndex: number) => {
     const types: Type[] | undefined = Reflect.getOwnMetadata(
       'design:paramtypes',
       target,
@@ -23,23 +26,25 @@ export const TypedHeaders =
       );
     }
 
+    const validationPipe = options?.validationPipe ?? new ValidationPipe({ transform: true });
     const paramType = types[parameterIndex];
+
     Headers()(target, propertyKey, parameterIndex);
-    HeaderSchema(paramType)(target, propertyKey, parameterIndex);
+    HeaderSchema({ paramType, validationPipe })(target, propertyKey, parameterIndex);
   };
 
-const HeaderSchema = createParamDecorator(async (value, ctx: ExecutionContext) => {
-  // Extract headers
-  const headers = ctx.switchToHttp().getRequest().headers;
+const HeaderSchema = createParamDecorator(
+  async (
+    options: { paramType: Type<unknown>; validationPipe: ValidationPipe },
+    ctx: ExecutionContext
+  ) => {
+    // Extract headers
+    const headers = ctx.switchToHttp().getRequest().headers;
 
-  // Convert headers to DTO object
-  const dto = plainToClass(value, headers, { excludeExtraneousValues: true });
-
-  // Validate
-  return validateOrReject(dto).then(
-    () => dto,
-    (err: ValidationError[]) => {
-      throw new BadRequestException(err.map((e) => Object.values(e.constraints as never)).flat());
-    }
-  );
-});
+    // Validate and transform
+    return options.validationPipe.transform(headers, {
+      type: 'custom',
+      metatype: options.paramType,
+    });
+  }
+);
