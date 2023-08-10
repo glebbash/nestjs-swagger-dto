@@ -43,7 +43,7 @@ const HeaderSchema = createParamDecorator(
 
     // Validate and transform
     return options.validationPipe.transform(headers, {
-      type: 'custom',
+      type: 'body',
       metatype: options.paramType,
     });
   }
