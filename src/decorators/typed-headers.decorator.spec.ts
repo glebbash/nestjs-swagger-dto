@@ -83,8 +83,8 @@ describe('TypedHeaders decorator', () => {
       }
     }).toThrow(
       new Error(
-        'Type metadata not found. See https://www.typescriptlang.org/docs/handbook/decorators.html#metadata'
-      )
+        'Type metadata not found. See https://www.typescriptlang.org/docs/handbook/decorators.html#metadata',
+      ),
     );
   });
 });

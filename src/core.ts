@@ -68,7 +68,7 @@ export const compose = <T, CustomOptions>(
       example,
       default: def,
       required: !optional,
-    })
+    }),
   );
 };
 

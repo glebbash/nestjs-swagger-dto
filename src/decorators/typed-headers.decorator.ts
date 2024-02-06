@@ -14,12 +14,12 @@ export const TypedHeaders =
     const types: Type[] | undefined = Reflect.getOwnMetadata(
       'design:paramtypes',
       target,
-      propertyKey
+      propertyKey,
     );
 
     if (types === undefined) {
       throw new Error(
-        'Type metadata not found. See https://www.typescriptlang.org/docs/handbook/decorators.html#metadata'
+        'Type metadata not found. See https://www.typescriptlang.org/docs/handbook/decorators.html#metadata',
       );
     }
 
@@ -40,6 +40,6 @@ const HeaderSchema = createParamDecorator(async (value, ctx: ExecutionContext) =
     () => dto,
     (err: ValidationError[]) => {
       throw new BadRequestException(err.map((e) => Object.values(e.constraints as never)).flat());
-    }
+    },
   );
 });

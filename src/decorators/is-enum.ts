@@ -23,12 +23,12 @@ export const IsEnum = <T extends number | string>({
   return compose(
     { type: typeof enumValues[0], enum: enumValues, enumName },
     base,
-    IsIn(enumValues, { each: !!base.isArray })
+    IsIn(enumValues, { each: !!base.isArray }),
   );
 };
 
 function getEnumNameAndValues<T extends number | string>(
-  e: EnumOptions<T>
+  e: EnumOptions<T>,
 ): {
   enumValues: T[];
   enumName?: string;

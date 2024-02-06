@@ -33,19 +33,19 @@ describe('IsUnknown', () => {
 
     it('accepts anything except null and undefined', async () => {
       expect(await input(Test, { unknownField: false })).toStrictEqual(
-        Result.ok(make(Test, { unknownField: false }))
+        Result.ok(make(Test, { unknownField: false })),
       );
       expect(await input(Test, { unknownField: 123 })).toStrictEqual(
-        Result.ok(make(Test, { unknownField: 123 }))
+        Result.ok(make(Test, { unknownField: 123 })),
       );
       expect(await input(Test, { unknownField: 'abc' })).toStrictEqual(
-        Result.ok(make(Test, { unknownField: 'abc' }))
+        Result.ok(make(Test, { unknownField: 'abc' })),
       );
       expect(await input(Test, { unknownField: [] })).toStrictEqual(
-        Result.ok(make(Test, { unknownField: [] }))
+        Result.ok(make(Test, { unknownField: [] })),
       );
       expect(await input(Test, { unknownField: {} })).toStrictEqual(
-        Result.ok(make(Test, { unknownField: {} }))
+        Result.ok(make(Test, { unknownField: {} })),
       );
     });
 
@@ -56,10 +56,10 @@ describe('IsUnknown', () => {
 
     it('rejects null and undefined by default', async () => {
       expect(await input(Test, { unknownField: null })).toStrictEqual(
-        Result.err('unknownField should not be null or undefined')
+        Result.err('unknownField should not be null or undefined'),
       );
       expect(await input(Test, {})).toStrictEqual(
-        Result.err('unknownField should not be null or undefined')
+        Result.err('unknownField should not be null or undefined'),
       );
     });
   });

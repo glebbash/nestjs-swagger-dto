@@ -13,7 +13,7 @@ describe('core options', () => {
       { type: 'boolean' },
       base,
       IsBoolean({ each: !!base.isArray }),
-      Reflect.metadata('meta', meta)
+      Reflect.metadata('meta', meta),
     );
 
   describe('support for custom options', () => {
@@ -100,10 +100,10 @@ describe('core options', () => {
 
     it('accepts value and undefined', async () => {
       expect(await input(Test, { booleanField: true })).toStrictEqual(
-        Result.ok(make(Test, { booleanField: true }))
+        Result.ok(make(Test, { booleanField: true })),
       );
       expect(await input(Test, { booleanField: false })).toStrictEqual(
-        Result.ok(make(Test, { booleanField: false }))
+        Result.ok(make(Test, { booleanField: false })),
       );
       expect(await input(Test, {})).toStrictEqual(Result.ok(make(Test, {})));
     });
@@ -121,7 +121,7 @@ describe('core options', () => {
 
       for (const testValue of testValues) {
         expect(await input(Test, testValue)).toStrictEqual(
-          Result.err('booleanField must be a boolean value')
+          Result.err('booleanField must be a boolean value'),
         );
       }
     });
@@ -154,10 +154,10 @@ describe('core options', () => {
 
     it('returns specified defaults if value is undefined', async () => {
       expect(await input(Test, { booleanField: true })).toStrictEqual(
-        Result.ok(make(Test, { booleanField: true }))
+        Result.ok(make(Test, { booleanField: true })),
       );
       expect(await input(Test, { booleanField: false })).toStrictEqual(
-        Result.ok(make(Test, { booleanField: false }))
+        Result.ok(make(Test, { booleanField: false })),
       );
       expect(await input(Test, {})).toStrictEqual(Result.ok(make(Test, { booleanField: false })));
     });
@@ -191,13 +191,13 @@ describe('core options', () => {
 
     it('accepts value and null', async () => {
       expect(await input(Test, { booleanField: true })).toStrictEqual(
-        Result.ok(make(Test, { booleanField: true }))
+        Result.ok(make(Test, { booleanField: true })),
       );
       expect(await input(Test, { booleanField: false })).toStrictEqual(
-        Result.ok(make(Test, { booleanField: false }))
+        Result.ok(make(Test, { booleanField: false })),
       );
       expect(await input(Test, { booleanField: null })).toStrictEqual(
-        Result.ok(make(Test, { booleanField: null }))
+        Result.ok(make(Test, { booleanField: null })),
       );
     });
 
@@ -214,7 +214,7 @@ describe('core options', () => {
 
       for (const testValue of testValues) {
         expect(await input(Test, testValue)).toStrictEqual(
-          Result.err('booleanField must be a boolean value')
+          Result.err('booleanField must be a boolean value'),
         );
       }
     });
@@ -250,13 +250,13 @@ describe('core options', () => {
 
     it('accepts value, null and undefined', async () => {
       expect(await input(Test, { booleanField: true })).toStrictEqual(
-        Result.ok(make(Test, { booleanField: true }))
+        Result.ok(make(Test, { booleanField: true })),
       );
       expect(await input(Test, { booleanField: false })).toStrictEqual(
-        Result.ok(make(Test, { booleanField: false }))
+        Result.ok(make(Test, { booleanField: false })),
       );
       expect(await input(Test, { booleanField: null })).toStrictEqual(
-        Result.ok(make(Test, { booleanField: null }))
+        Result.ok(make(Test, { booleanField: null })),
       );
       expect(await input(Test, {})).toStrictEqual(Result.ok(make(Test, {})));
     });
@@ -273,7 +273,7 @@ describe('core options', () => {
 
       for (const testValue of testValues) {
         expect(await input(Test, testValue)).toStrictEqual(
-          Result.err('booleanField must be a boolean value')
+          Result.err('booleanField must be a boolean value'),
         );
       }
     });
@@ -309,19 +309,19 @@ describe('core options', () => {
 
     it('accepts value arrays', async () => {
       expect(await input(Test, { booleanField: [true, false] })).toStrictEqual(
-        Result.ok(make(Test, { booleanField: [true, false] }))
+        Result.ok(make(Test, { booleanField: [true, false] })),
       );
       expect(await input(Test, { booleanField: [] })).toStrictEqual(
-        Result.ok(make(Test, { booleanField: [] }))
+        Result.ok(make(Test, { booleanField: [] })),
       );
     });
 
     it('rejects everything else', async () => {
       expect(await input(Test, { booleanField: true })).toStrictEqual(
-        Result.err('booleanField must be an array')
+        Result.err('booleanField must be an array'),
       );
       expect(await input(Test, { booleanField: [1, 2, 3] })).toStrictEqual(
-        Result.err('each value in booleanField must be a boolean value')
+        Result.err('each value in booleanField must be a boolean value'),
       );
     });
   });

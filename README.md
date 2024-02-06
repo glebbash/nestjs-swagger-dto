@@ -7,7 +7,38 @@
 
 This library combines common `@nestjs/swagger`, `class-transformer` and `class-validator` decorators that are used together into one decorator for full Nest.js DTO lifecycle including OpenAPI schema descriptions.
 
-DTO without `nestjs-swagger-dto`:
+<table>
+<tr>
+<th>DTO with nestjs-swagger-dto</th>
+<th>DTO without nestjs-swagger-dto</th>
+</tr>
+<tr>
+<td>
+
+```ts
+import { IsEnum, IsNested, IsString } from 'nestjs-swagger-dto';
+
+class RoleDto {
+  @IsString({
+    optional: true,
+    minLength: 3,
+    maxLength: 256,
+  })
+  name?: string;
+
+  @IsString({ optional: true, maxLength: 255 })
+  description?: string;
+
+  @IsEnum({ enum: { RoleStatus } })
+  status!: RoleStatus;
+
+  @IsNested({ type: PermissionDto, isArray: true })
+  permissions!: PermissionDto[];
+}
+```
+
+</td>
+<td>
 
 ```ts
 import { ApiProperty } from '@nestjs/swagger';
@@ -34,32 +65,11 @@ export class RoleDto {
   @ApiProperty({ type: [PermissionDto] })
   permissions!: PermissionDto[];
 }
-
 ```
 
-DTO with `nestjs-swagger-dto`:
-
-```ts
-import { IsEnum, IsNested, IsString } from 'nestjs-swagger-dto';
-
-class RoleDto {
-  @IsString({
-    optional: true,
-    minLength: 3,
-    maxLength: 256,
-  })
-  name?: string;
-
-  @IsString({ optional: true, maxLength: 255 })
-  description?: string;
-
-  @IsEnum({ enum: { RoleStatus } })
-  status!: RoleStatus;
-
-  @IsNested({ type: PermissionDto, isArray: true })
-  permissions!: PermissionDto[];
-}
-```
+</td>
+</tr>
+</table>
 
 ## Installation
 
@@ -113,8 +123,8 @@ export class TestHeaders {
   countryCode!: string;
 
   @IsString({
-    isDate: { format: 'date-time' },
     name: 'timestamp',
+    isDate: { format: 'date-time' },
   })
   timestamp!: string;
 }

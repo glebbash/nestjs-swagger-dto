@@ -5,18 +5,18 @@ import type {
   ReferenceObject,
   SchemaObject,
 } from '@nestjs/swagger/dist/interfaces/open-api-spec.interface';
-import { ClassConstructor, classToPlain, plainToClass } from 'class-transformer';
+import { ClassConstructor, instanceToPlain, plainToClass } from 'class-transformer';
 import { validate, ValidationError } from 'class-validator';
 import { Result } from 'true-myth';
 
 export function make<T, D extends T>(cls: ClassConstructor<T>, object: D): D {
-  return Object.assign(new cls(), object);
+  return Object.assign(new cls() as never, object);
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function input<T extends Record<string, any>>(
   cls: ClassConstructor<T>,
-  object: unknown
+  object: unknown,
 ): Promise<Result<T, string>> {
   const res = plainToClass(cls, object, { exposeUnsetFields: false });
   const errors = await validate(res, {
@@ -28,7 +28,7 @@ export async function input<T extends Record<string, any>>(
 }
 
 export function output<T>(instance: T): T {
-  return classToPlain(instance, {
+  return instanceToPlain(instance, {
     strategy: 'exposeAll',
     excludeExtraneousValues: true,
     exposeUnsetFields: false,
@@ -42,14 +42,14 @@ function getValidationError(error: ValidationError): string {
 }
 
 export async function generateSchemas(
-  models: Type[]
+  models: Type[],
 ): Promise<Record<string, SchemaObject | ReferenceObject>> {
   class AppModule {}
 
   const spec = SwaggerModule.createDocument(
     await NestFactory.create<INestApplication>(AppModule, { logger: false }),
     new DocumentBuilder().build(),
-    { extraModels: models }
+    { extraModels: models },
   );
 
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion

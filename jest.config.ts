@@ -1,7 +1,7 @@
 import type Jest from '@jest/types';
 
 const config: Jest.Config.InitialOptions = {
-  preset: "ts-jest",
+  preset: 'ts-jest',
   moduleFileExtensions: ['js', 'ts'],
   rootDir: 'src',
   testRegex: '.*\\.spec\\.ts$',

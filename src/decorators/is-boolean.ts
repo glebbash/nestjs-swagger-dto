@@ -20,5 +20,5 @@ export const IsBoolean = ({
             toPlainOnly: true,
           }),
         ]
-      : [])
+      : []),
   );

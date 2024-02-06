@@ -14,7 +14,7 @@ describe('IsEnum', () => {
       expect(await generateSchemas([Test])).toStrictEqual({
         OneOrTwo: {
           enum: [1, 2],
-          type: 'string',
+          type: 'number',
         },
         Test: {
           type: 'object',
@@ -30,10 +30,10 @@ describe('IsEnum', () => {
 
     it('accepts specified enum', async () => {
       expect(await input(Test, { enumField: 1 })).toStrictEqual(
-        Result.ok(make(Test, { enumField: 1 }))
+        Result.ok(make(Test, { enumField: 1 })),
       );
       expect(await input(Test, { enumField: 2 })).toStrictEqual(
-        Result.ok(make(Test, { enumField: 2 }))
+        Result.ok(make(Test, { enumField: 2 })),
       );
     });
 
@@ -50,7 +50,7 @@ describe('IsEnum', () => {
 
       for (const testValue of testValues) {
         expect(await input(Test, testValue)).toStrictEqual(
-          Result.err('enumField must be one of the following values: 1, 2')
+          Result.err('enumField must be one of the following values: 1, 2'),
         );
       }
     });
@@ -87,10 +87,10 @@ describe('IsEnum', () => {
 
     it('accepts specified enum', async () => {
       expect(await input(Test, { enumField: 'On' })).toStrictEqual(
-        Result.ok(make(Test, { enumField: Enum.On }))
+        Result.ok(make(Test, { enumField: Enum.On })),
       );
       expect(await input(Test, { enumField: 'Off' })).toStrictEqual(
-        Result.ok(make(Test, { enumField: Enum.Off }))
+        Result.ok(make(Test, { enumField: Enum.Off })),
       );
     });
 
@@ -107,7 +107,7 @@ describe('IsEnum', () => {
 
       for (const testValue of testValues) {
         expect(await input(Test, testValue)).toStrictEqual(
-          Result.err('enumField must be one of the following values: On, Off')
+          Result.err('enumField must be one of the following values: On, Off'),
         );
       }
     });
@@ -116,10 +116,10 @@ describe('IsEnum', () => {
   describe('enum name validation', () => {
     it('throws if enum name cannot be extracted', () => {
       expect(() => IsEnum({ enum: {} })).toThrow(
-        new Error('EnumOptions object should have exactly one key')
+        new Error('EnumOptions object should have exactly one key'),
       );
       expect(() => IsEnum({ enum: { a: [1, 2, 3], b: [3, 4, 5] } })).toThrow(
-        new Error('EnumOptions object should have exactly one key')
+        new Error('EnumOptions object should have exactly one key'),
       );
     });
   });
@@ -155,19 +155,19 @@ describe('IsEnum', () => {
 
     it('accepts enum arrays', async () => {
       expect(await input(Test, { enumField: ['a', 'b'] })).toStrictEqual(
-        Result.ok(make(Test, { enumField: ['a', 'b'] }))
+        Result.ok(make(Test, { enumField: ['a', 'b'] })),
       );
       expect(await input(Test, { enumField: [] })).toStrictEqual(
-        Result.ok(make(Test, { enumField: [] }))
+        Result.ok(make(Test, { enumField: [] })),
       );
     });
 
     it('rejects everything else', async () => {
       expect(await input(Test, { enumField: true })).toStrictEqual(
-        Result.err('each value in enumField must be one of the following values: a, b')
+        Result.err('each value in enumField must be one of the following values: a, b'),
       );
       expect(await input(Test, { enumField: ['a', 'b', 'c'] })).toStrictEqual(
-        Result.err('each value in enumField must be one of the following values: a, b')
+        Result.err('each value in enumField must be one of the following values: a, b'),
       );
     });
   });

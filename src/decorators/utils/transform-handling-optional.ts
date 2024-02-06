@@ -2,7 +2,7 @@ import { Transform, TransformFnParams } from 'class-transformer';
 
 export function TransformHandlingOptional(
   config: { optional?: true; nullable?: true },
-  transform: (params: TransformFnParams) => unknown
+  transform: (params: TransformFnParams) => unknown,
 ) {
   return Transform((params: TransformFnParams) => {
     if (config.optional && params.value === undefined) {

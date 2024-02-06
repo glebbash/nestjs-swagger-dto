@@ -7,7 +7,7 @@ export type CustomValidateOptions<T = unknown> = {
 
 export function CustomValidate<T = unknown>(
   options: CustomValidateOptions<T>,
-  validationOptions?: ValidationOptions
+  validationOptions?: ValidationOptions,
 ): PropertyDecorator {
   return ValidateBy(
     {
@@ -19,6 +19,6 @@ export function CustomValidate<T = unknown>(
           typeof options.message === 'string' ? options.message : options.message(args),
       },
     },
-    validationOptions
+    validationOptions,
   );
 }

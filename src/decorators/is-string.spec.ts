@@ -26,10 +26,10 @@ describe('IsString', () => {
 
     it('accepts strings', async () => {
       expect(await input(Test, { stringField: 'abc' })).toStrictEqual(
-        Result.ok(make(Test, { stringField: 'abc' }))
+        Result.ok(make(Test, { stringField: 'abc' })),
       );
       expect(await input(Test, { stringField: '' })).toStrictEqual(
-        Result.ok(make(Test, { stringField: '' }))
+        Result.ok(make(Test, { stringField: '' })),
       );
     });
 
@@ -45,7 +45,7 @@ describe('IsString', () => {
 
       for (const testValue of testValues) {
         expect(await input(Test, testValue)).toStrictEqual(
-          Result.err('stringField must be a string')
+          Result.err('stringField must be a string'),
         );
       }
     });
@@ -75,16 +75,16 @@ describe('IsString', () => {
 
     it('checks minLength and maxLength', async () => {
       expect(await input(Test, { stringField: 'aaaaa' })).toStrictEqual(
-        Result.ok(make(Test, { stringField: 'aaaaa' }))
+        Result.ok(make(Test, { stringField: 'aaaaa' })),
       );
       expect(await input(Test, { stringField: 'a' })).toStrictEqual(
-        Result.err('stringField must be longer than or equal to 5 characters')
+        Result.err('stringField must be longer than or equal to 5 characters'),
       );
       expect(await input(Test, { stringField: 'a'.repeat(11) })).toStrictEqual(
-        Result.err('stringField must be shorter than or equal to 10 characters')
+        Result.err('stringField must be shorter than or equal to 10 characters'),
       );
       expect(await input(Test, { stringField: false })).toStrictEqual(
-        Result.err('stringField must be a string')
+        Result.err('stringField must be a string'),
       );
     });
 
@@ -95,7 +95,7 @@ describe('IsString', () => {
       }
 
       expect(await input(TestCanBeEmpty, { stringField: '' })).toStrictEqual(
-        Result.ok(make(TestCanBeEmpty, { stringField: '' }))
+        Result.ok(make(TestCanBeEmpty, { stringField: '' })),
       );
     });
   });
@@ -123,13 +123,13 @@ describe('IsString', () => {
 
     it('accepts strings with specified pattern and rejects other ones', async () => {
       expect(await input(Test, { stringField: 'aaaaa' })).toStrictEqual(
-        Result.ok(make(Test, { stringField: 'aaaaa' }))
+        Result.ok(make(Test, { stringField: 'aaaaa' })),
       );
       expect(await input(Test, { stringField: 'aaab' })).toStrictEqual(
-        Result.err('stringField must match /^a+$/ regular expression')
+        Result.err('stringField must match /^a+$/ regular expression'),
       );
       expect(await input(Test, { stringField: false })).toStrictEqual(
-        Result.err('stringField must be a string')
+        Result.err('stringField must be a string'),
       );
     });
 
@@ -142,7 +142,7 @@ describe('IsString', () => {
       }
 
       expect(await input(TestCustomMessage, { stringField: 'aaab' })).toStrictEqual(
-        Result.err('stringField must only contain "a" letters')
+        Result.err('stringField must only contain "a" letters'),
       );
     });
   });
@@ -170,13 +170,13 @@ describe('IsString', () => {
 
     it('accepts email strings and rejects other ones', async () => {
       expect(await input(Test, { stringField: 'abc@abc.abc' })).toStrictEqual(
-        Result.ok(make(Test, { stringField: 'abc@abc.abc' }))
+        Result.ok(make(Test, { stringField: 'abc@abc.abc' })),
       );
       expect(await input(Test, { stringField: 'aaab' })).toStrictEqual(
-        Result.err('stringField must be an email')
+        Result.err('stringField must be an email'),
       );
       expect(await input(Test, { stringField: false })).toStrictEqual(
-        Result.err('stringField must be a string')
+        Result.err('stringField must be a string'),
       );
     });
   });
@@ -206,19 +206,19 @@ describe('IsString', () => {
 
     it('accepts string arrays', async () => {
       expect(await input(Test, { stringField: ['a', 'b', 'c'] })).toStrictEqual(
-        Result.ok(make(Test, { stringField: ['a', 'b', 'c'] }))
+        Result.ok(make(Test, { stringField: ['a', 'b', 'c'] })),
       );
       expect(await input(Test, { stringField: [] })).toStrictEqual(
-        Result.ok(make(Test, { stringField: [] }))
+        Result.ok(make(Test, { stringField: [] })),
       );
     });
 
     it('rejects everything else', async () => {
       expect(await input(Test, { stringField: true })).toStrictEqual(
-        Result.err('each value in stringField must be a string')
+        Result.err('each value in stringField must be a string'),
       );
       expect(await input(Test, { stringField: [1, 2, 3] })).toStrictEqual(
-        Result.err('each value in stringField must be a string')
+        Result.err('each value in stringField must be a string'),
       );
     });
   });
@@ -247,7 +247,7 @@ describe('IsString', () => {
 
       it('accepts date as YYYY-MM-DD', async () => {
         expect(await input(Test, { stringField: '2020-01-01' })).toStrictEqual(
-          Result.ok(make(Test, { stringField: '2020-01-01' }))
+          Result.ok(make(Test, { stringField: '2020-01-01' })),
         );
       });
 
@@ -259,7 +259,7 @@ describe('IsString', () => {
         ['not_a_date'],
       ])('rejects %s', async (value) => {
         expect(await input(Test, { stringField: value })).toStrictEqual(
-          Result.err('stringField is not formatted as `yyyy-mm-dd` or not a valid Date')
+          Result.err('stringField is not formatted as `yyyy-mm-dd` or not a valid Date'),
         );
       });
     });
@@ -294,7 +294,7 @@ describe('IsString', () => {
         ['2020-01-01T00:00:00+00:00'],
       ])('accepts %s', async (value) => {
         expect(await input(Test, { stringField: value })).toStrictEqual(
-          Result.ok(make(Test, { stringField: value }))
+          Result.ok(make(Test, { stringField: value })),
         );
       });
 
@@ -309,7 +309,7 @@ describe('IsString', () => {
         ['not_a_date'],
       ])('rejects %s', async (value) => {
         expect(await input(Test, { stringField: value })).toStrictEqual(
-          Result.err('stringField is not in a ISO8601 format.')
+          Result.err('stringField is not in a ISO8601 format.'),
         );
       });
     });
@@ -328,7 +328,7 @@ describe('IsString', () => {
       }
 
       expect(await input(Test, { stringField: 'any' })).toStrictEqual(
-        Result.ok(make(Test, { stringField: 'any' }))
+        Result.ok(make(Test, { stringField: 'any' })),
       );
     });
 
@@ -344,7 +344,7 @@ describe('IsString', () => {
       }
 
       expect(await input(Test, { stringField: 'any' })).toStrictEqual(
-        Result.err('test error message')
+        Result.err('test error message'),
       );
     });
 
@@ -360,7 +360,7 @@ describe('IsString', () => {
       }
 
       expect(await input(Test, { stringField: 'any' })).toStrictEqual(
-        Result.err('stringField is invalid')
+        Result.err('stringField is invalid'),
       );
     });
 
@@ -377,7 +377,7 @@ describe('IsString', () => {
       }
 
       expect(await input(Test, { stringField: 'any' })).toStrictEqual(
-        Result.err('each value in stringField is invalid')
+        Result.err('each value in stringField is invalid'),
       );
     });
   });

@@ -12,7 +12,7 @@ describe('IsConstant', () => {
 
     it('accepts specified constant', async () => {
       expect(await input(Test, { constantField: 123 })).toStrictEqual(
-        Result.ok(make(Test, { constantField: 123 }))
+        Result.ok(make(Test, { constantField: 123 })),
       );
     });
 
@@ -23,7 +23,7 @@ describe('IsConstant', () => {
       }
 
       expect(await input(Test, { constantField: [1, 2, 3] })).toStrictEqual(
-        Result.err('constantField must be equal to 1, 2, 3')
+        Result.err('constantField must be equal to 1, 2, 3'),
       );
     });
 
@@ -40,7 +40,7 @@ describe('IsConstant', () => {
 
       for (const testValue of testValues) {
         expect(await input(Test, testValue)).toStrictEqual(
-          Result.err('constantField must be equal to 123')
+          Result.err('constantField must be equal to 123'),
         );
       }
     });
@@ -54,25 +54,25 @@ describe('IsConstant', () => {
 
     it('accepts specified constant array', async () => {
       expect(await input(Test, { constantField: [1, 1, 1] })).toStrictEqual(
-        Result.ok(make(Test, { constantField: [1, 1, 1] }))
+        Result.ok(make(Test, { constantField: [1, 1, 1] })),
       );
     });
 
     it('rejects everything else', async () => {
       expect(await input(Test, { constantField: [1] })).toStrictEqual(
-        Result.err('constantField must contain at least 3 elements')
+        Result.err('constantField must contain at least 3 elements'),
       );
       expect(await input(Test, { constantField: ['1'] })).toStrictEqual(
-        Result.err('each value in constantField must be equal to 1')
+        Result.err('each value in constantField must be equal to 1'),
       );
       expect(await input(Test, { constantField: ['1', '1', '1'] })).toStrictEqual(
-        Result.err('each value in constantField must be equal to 1')
+        Result.err('each value in constantField must be equal to 1'),
       );
       expect(await input(Test, { constantField: [1, 2, 3] })).toStrictEqual(
-        Result.err('each value in constantField must be equal to 1')
+        Result.err('each value in constantField must be equal to 1'),
       );
       expect(await input(Test, { constantField: [2, 2, 2] })).toStrictEqual(
-        Result.err('each value in constantField must be equal to 1')
+        Result.err('each value in constantField must be equal to 1'),
       );
     });
   });
