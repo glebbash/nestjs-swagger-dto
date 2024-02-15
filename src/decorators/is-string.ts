@@ -63,5 +63,5 @@ export const IsString = ({
     isEmail ? IsEmail(undefined, { each: !!base.isArray }) : noop,
     pattern ? Matches(pattern.regex, { message: pattern.message, each: !!base.isArray }) : noop,
     isDate ? CustomValidate(dateValidators[isDate.format], { each: !!base.isArray }) : noop,
-    customValidate ? CustomValidate(customValidate, { each: !!base.isArray }) : noop
+    customValidate ? CustomValidate(customValidate, { each: !!base.isArray }) : noop,
   );

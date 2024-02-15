@@ -27,5 +27,5 @@ export const IsNested = <T>({
     ValidateNested({
       each: !!base.isArray,
       message: nestedFieldMessage(!!base.isArray),
-    })
+    }),
   );

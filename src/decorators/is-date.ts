@@ -19,7 +19,7 @@ export const IsDate = ({
     { type: 'string', format },
     { ...base, default: stringify(def, dateTime), example: stringify(example, dateTime) },
     TransformHandlingOptional(base, dateTime ? transformDateTime : transformDate),
-    IsDateCV({ message: ({ value }) => value?.message })
+    IsDateCV({ message: ({ value }) => value?.message }),
   );
 };
 
@@ -62,7 +62,7 @@ function transformDateTime({ key, value, type }: TransformFnParams) {
 
 function stringify(
   value: Date | Date[] | undefined,
-  dateTime: boolean
+  dateTime: boolean,
 ): string | string[] | undefined {
   if (value === undefined) {
     return value;

@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node: [14, 16, 18, 20]
+        node: [18, 20]
     steps:
       - uses: actions/checkout@v1
 
@@ -21,7 +21,7 @@ jobs:
       - run: npm run test:ci
 
       - name: Collect coverage
-        if: matrix.node == 16
+        if: matrix.node == 20
         uses: coverallsapp/github-action@master
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -38,10 +38,10 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Use Node.js 18
+      - name: Use Node.js 20
         uses: actions/setup-node@v1
         with:
-          node-version: 18
+          node-version: 20
 
       - run: npm ci
 

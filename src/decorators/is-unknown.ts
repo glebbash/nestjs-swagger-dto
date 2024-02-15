@@ -20,5 +20,5 @@ export const IsUnknown = ({
       ],
     },
     base,
-    IsDefined()
+    IsDefined(),
   );

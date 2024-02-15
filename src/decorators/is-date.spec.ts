@@ -32,21 +32,21 @@ describe('IsDate', () => {
 
     it('accepts date', async () => {
       expect(await input(Test, { date: '2011-12-30' })).toStrictEqual(
-        Result.ok(make(Test, { date: new Date('2011-12-30') }))
+        Result.ok(make(Test, { date: new Date('2011-12-30') })),
       );
     });
 
     it('rejects invalid date', async () => {
       expect(await input(Test, { date: '2011-13-13' })).toStrictEqual(
-        Result.err('date is not a valid Date')
+        Result.err('date is not a valid Date'),
       );
 
       expect(await input(Test, { date: 'not a date' })).toStrictEqual(
-        Result.err('date is not formatted as `yyyy-mm-dd`')
+        Result.err('date is not formatted as `yyyy-mm-dd`'),
       );
 
       expect(await input(Test, { date: '2011/12/02' })).toStrictEqual(
-        Result.err('date is not formatted as `yyyy-mm-dd`')
+        Result.err('date is not formatted as `yyyy-mm-dd`'),
       );
 
       expect(await input(Test, {})).toStrictEqual(Result.err('date does not exist'));
@@ -74,7 +74,7 @@ describe('IsDate', () => {
       expect(output(dto)).toStrictEqual({ date: null });
 
       expect(await input(TestNullable, { date: null })).toStrictEqual(
-        Result.ok(make(TestNullable, { date: null }))
+        Result.ok(make(TestNullable, { date: null })),
       );
     });
 
@@ -113,7 +113,7 @@ describe('IsDate', () => {
         expect(output(dto)).toStrictEqual({ date: DEFAULT_DATE_STR });
 
         expect(await input(TestDefault, {})).toStrictEqual(
-          Result.ok(make(TestDefault, { date: new Date(DEFAULT_DATE_STR) }))
+          Result.ok(make(TestDefault, { date: new Date(DEFAULT_DATE_STR) })),
         );
       });
     });
@@ -147,21 +147,21 @@ describe('IsDate', () => {
 
     it('accepts date-time', async () => {
       expect(await input(Test, { date: '2017-06-01T18:43:26.000Z' })).toStrictEqual(
-        Result.ok(make(Test, { date: new Date('2017-06-01T18:43:26.000Z') }))
+        Result.ok(make(Test, { date: new Date('2017-06-01T18:43:26.000Z') })),
       );
     });
 
     it('rejects invalid date-time', async () => {
       expect(await input(Test, { date: '2011-13-13' })).toStrictEqual(
-        Result.err('date is not ISO8601 format')
+        Result.err('date is not ISO8601 format'),
       );
 
       expect(await input(Test, { date: 'not a date' })).toStrictEqual(
-        Result.err('date is not ISO8601 format')
+        Result.err('date is not ISO8601 format'),
       );
 
       expect(await input(Test, { date: '2011/12/02' })).toStrictEqual(
-        Result.err('date is not ISO8601 format')
+        Result.err('date is not ISO8601 format'),
       );
 
       expect(await input(Test, {})).toStrictEqual(Result.err('date does not exist'));
@@ -189,7 +189,7 @@ describe('IsDate', () => {
       expect(output(dto)).toStrictEqual({ date: null });
 
       expect(await input(TestNullable, { date: null })).toStrictEqual(
-        Result.ok(make(TestNullable, { date: null }))
+        Result.ok(make(TestNullable, { date: null })),
       );
     });
 
@@ -227,7 +227,7 @@ describe('IsDate', () => {
         expect(output(dto)).toStrictEqual({ date: DEFAULT_DATE.toISOString() });
 
         expect(await input(TestDefault, {})).toStrictEqual(
-          Result.ok(make(TestDefault, { date: DEFAULT_DATE }))
+          Result.ok(make(TestDefault, { date: DEFAULT_DATE })),
         );
       });
     });

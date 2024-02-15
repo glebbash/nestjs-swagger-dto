@@ -26,10 +26,10 @@ describe('IsBoolean', () => {
 
     it('accepts booleans', async () => {
       expect(await input(Test, { booleanField: true })).toStrictEqual(
-        Result.ok(make(Test, { booleanField: true }))
+        Result.ok(make(Test, { booleanField: true })),
       );
       expect(await input(Test, { booleanField: false })).toStrictEqual(
-        Result.ok(make(Test, { booleanField: false }))
+        Result.ok(make(Test, { booleanField: false })),
       );
     });
 
@@ -52,7 +52,7 @@ describe('IsBoolean', () => {
 
       for (const testValue of testValues) {
         expect(await input(Test, testValue)).toStrictEqual(
-          Result.err('booleanField must be a boolean value')
+          Result.err('booleanField must be a boolean value'),
         );
       }
     });
@@ -85,16 +85,16 @@ describe('IsBoolean', () => {
 
     it('accepts boolean strings and booleans', async () => {
       expect(await input(Test, { booleanField: 'true' })).toStrictEqual(
-        Result.ok(make(Test, { booleanField: true }))
+        Result.ok(make(Test, { booleanField: true })),
       );
       expect(await input(Test, { booleanField: 'false' })).toStrictEqual(
-        Result.ok(make(Test, { booleanField: false }))
+        Result.ok(make(Test, { booleanField: false })),
       );
       expect(await input(Test, { booleanField: true })).toStrictEqual(
-        Result.ok(make(Test, { booleanField: true }))
+        Result.ok(make(Test, { booleanField: true })),
       );
       expect(await input(Test, { booleanField: false })).toStrictEqual(
-        Result.ok(make(Test, { booleanField: false }))
+        Result.ok(make(Test, { booleanField: false })),
       );
     });
 
@@ -114,7 +114,7 @@ describe('IsBoolean', () => {
 
       for (const testValue of testValues) {
         expect(await input(Test, testValue)).toStrictEqual(
-          Result.err('booleanField must be a boolean value')
+          Result.err('booleanField must be a boolean value'),
         );
       }
     });

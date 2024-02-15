@@ -12,10 +12,10 @@ describe('IsNumber', () => {
 
     it('accepts numbers', async () => {
       expect(await input(Test, { numberField: 1 })).toStrictEqual(
-        Result.ok(make(Test, { numberField: 1 }))
+        Result.ok(make(Test, { numberField: 1 })),
       );
       expect(await input(Test, { numberField: 1.1 })).toStrictEqual(
-        Result.ok(make(Test, { numberField: 1.1 }))
+        Result.ok(make(Test, { numberField: 1.1 })),
       );
     });
 
@@ -31,7 +31,7 @@ describe('IsNumber', () => {
 
       for (const testValue of testValues) {
         expect(await input(Test, testValue)).toStrictEqual(
-          Result.err('numberField must be a number conforming to the specified constraints')
+          Result.err('numberField must be a number conforming to the specified constraints'),
         );
       }
     });
@@ -45,13 +45,13 @@ describe('IsNumber', () => {
       }
 
       expect(await input(Test, { numberField: 10 })).toStrictEqual(
-        Result.ok(make(Test, { numberField: 10 }))
+        Result.ok(make(Test, { numberField: 10 })),
       );
       expect(await input(Test, { numberField: 1 })).toStrictEqual(
-        Result.err('numberField must not be less than 5')
+        Result.err('numberField must not be less than 5'),
       );
       expect(await input(Test, { numberField: false })).toStrictEqual(
-        Result.err('numberField must be a number conforming to the specified constraints')
+        Result.err('numberField must be a number conforming to the specified constraints'),
       );
     });
 
@@ -62,13 +62,13 @@ describe('IsNumber', () => {
       }
 
       expect(await input(Test, { numberField: 5 })).toStrictEqual(
-        Result.ok(make(Test, { numberField: 5 }))
+        Result.ok(make(Test, { numberField: 5 })),
       );
       expect(await input(Test, { numberField: 11 })).toStrictEqual(
-        Result.err('numberField must not be greater than 10')
+        Result.err('numberField must not be greater than 10'),
       );
       expect(await input(Test, { numberField: false })).toStrictEqual(
-        Result.err('numberField must be a number conforming to the specified constraints')
+        Result.err('numberField must be a number conforming to the specified constraints'),
       );
     });
 
@@ -79,16 +79,16 @@ describe('IsNumber', () => {
       }
 
       expect(await input(Test, { numberField: 5 })).toStrictEqual(
-        Result.ok(make(Test, { numberField: 5 }))
+        Result.ok(make(Test, { numberField: 5 })),
       );
       expect(await input(Test, { numberField: 1 })).toStrictEqual(
-        Result.err('numberField must not be less than 5')
+        Result.err('numberField must not be less than 5'),
       );
       expect(await input(Test, { numberField: 11 })).toStrictEqual(
-        Result.err('numberField must not be greater than 10')
+        Result.err('numberField must not be greater than 10'),
       );
       expect(await input(Test, { numberField: false })).toStrictEqual(
-        Result.err('numberField must be a number conforming to the specified constraints')
+        Result.err('numberField must be a number conforming to the specified constraints'),
       );
     });
   });
@@ -101,16 +101,16 @@ describe('IsNumber', () => {
 
     it('accepts number strings and numbers', async () => {
       expect(await input(Test, { numberField: '10' })).toStrictEqual(
-        Result.ok(make(Test, { numberField: 10 }))
+        Result.ok(make(Test, { numberField: 10 })),
       );
       expect(await input(Test, { numberField: '-10.5' })).toStrictEqual(
-        Result.ok(make(Test, { numberField: -10.5 }))
+        Result.ok(make(Test, { numberField: -10.5 })),
       );
       expect(await input(Test, { numberField: 10 })).toStrictEqual(
-        Result.ok(make(Test, { numberField: 10 }))
+        Result.ok(make(Test, { numberField: 10 })),
       );
       expect(await input(Test, { numberField: -10.5 })).toStrictEqual(
-        Result.ok(make(Test, { numberField: -10.5 }))
+        Result.ok(make(Test, { numberField: -10.5 })),
       );
     });
 
@@ -128,7 +128,7 @@ describe('IsNumber', () => {
 
       for (const testValue of testValues) {
         expect(await input(Test, testValue)).toStrictEqual(
-          Result.err('numberField must be a number conforming to the specified constraints')
+          Result.err('numberField must be a number conforming to the specified constraints'),
         );
       }
     });
@@ -162,7 +162,7 @@ describe('IsNumber', () => {
 
     it('accepts integers', async () => {
       expect(await input(Test, { integerField: 10 })).toStrictEqual(
-        Result.ok(make(Test, { integerField: 10 }))
+        Result.ok(make(Test, { integerField: 10 })),
       );
     });
 
@@ -179,7 +179,7 @@ describe('IsNumber', () => {
 
       for (const testValue of testValues) {
         expect(await input(Test, testValue)).toStrictEqual(
-          Result.err('integerField must be a number conforming to the specified constraints')
+          Result.err('integerField must be a number conforming to the specified constraints'),
         );
       }
     });
@@ -193,7 +193,7 @@ describe('IsNumber', () => {
 
     it('returns specified defaults and parses stringified fields', async () => {
       expect(await input(Test, { numberField: '1' })).toStrictEqual(
-        Result.ok(make(Test, { numberField: 1 }))
+        Result.ok(make(Test, { numberField: 1 })),
       );
       expect(await input(Test, {})).toStrictEqual(Result.ok(make(Test, { numberField: 25 })));
     });
@@ -207,12 +207,12 @@ describe('IsNumber', () => {
 
     it('returns specified defaults and parses stringified fields', async () => {
       expect(await input(Test, { numberField: '2' })).toStrictEqual(
-        Result.ok(make(Test, { numberField: 2 }))
+        Result.ok(make(Test, { numberField: 2 })),
       );
     });
     it('returns specified defaults and parses stringified fields', async () => {
       expect(await input(Test, { numberField: 2 })).toStrictEqual(
-        Result.ok(make(Test, { numberField: 2 }))
+        Result.ok(make(Test, { numberField: 2 })),
       );
     });
   });
@@ -225,23 +225,23 @@ describe('IsNumber', () => {
 
     it('accepts number arrays', async () => {
       expect(await input(Test, { numberField: [1, 2, 3] })).toStrictEqual(
-        Result.ok(make(Test, { numberField: [1, 2, 3] }))
+        Result.ok(make(Test, { numberField: [1, 2, 3] })),
       );
       expect(await input(Test, { numberField: [] })).toStrictEqual(
-        Result.ok(make(Test, { numberField: [] }))
+        Result.ok(make(Test, { numberField: [] })),
       );
     });
 
     it('rejects everything else', async () => {
       expect(await input(Test, { numberField: true })).toStrictEqual(
         Result.err(
-          'each value in numberField must be a number conforming to the specified constraints'
-        )
+          'each value in numberField must be a number conforming to the specified constraints',
+        ),
       );
       expect(await input(Test, { numberField: ['a', 'b', 'c'] })).toStrictEqual(
         Result.err(
-          'each value in numberField must be a number conforming to the specified constraints'
-        )
+          'each value in numberField must be a number conforming to the specified constraints',
+        ),
       );
     });
   });

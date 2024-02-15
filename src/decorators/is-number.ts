@@ -40,5 +40,5 @@ export const IsNumber = ({
     IsNumberCV({ ...(type === 'integer' && { maxDecimalPlaces: 0 }) }, { each: !!base.isArray }),
     stringified ? Transform(({ value }) => (isNumberString(value) ? Number(value) : value)) : noop,
     min !== undefined ? Min(min, { each: !!base.isArray }) : noop,
-    max !== undefined ? Max(max, { each: !!base.isArray }) : noop
+    max !== undefined ? Max(max, { each: !!base.isArray }) : noop,
   );

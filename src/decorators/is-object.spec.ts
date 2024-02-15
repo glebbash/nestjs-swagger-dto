@@ -12,10 +12,10 @@ describe('IsObject', () => {
 
     it('accepts objects', async () => {
       expect(await input(Test, { objectField: { a: 1 } })).toStrictEqual(
-        Result.ok(make(Test, { objectField: { a: 1 } }))
+        Result.ok(make(Test, { objectField: { a: 1 } })),
       );
       expect(await input(Test, { objectField: {} })).toStrictEqual(
-        Result.ok(make(Test, { objectField: {} }))
+        Result.ok(make(Test, { objectField: {} })),
       );
     });
 
@@ -37,7 +37,7 @@ describe('IsObject', () => {
 
       for (const testValue of testValues) {
         expect(await input(Test, testValue)).toStrictEqual(
-          Result.err('objectField must be an object')
+          Result.err('objectField must be an object'),
         );
       }
     });
@@ -51,19 +51,19 @@ describe('IsObject', () => {
       }
 
       expect(await input(Test, { objectField: { a: 1, b: 2, c: 3 } })).toStrictEqual(
-        Result.ok(make(Test, { objectField: { a: 1, b: 2, c: 3 } }))
+        Result.ok(make(Test, { objectField: { a: 1, b: 2, c: 3 } })),
       );
       expect(await input(Test, { objectField: { a: 1 } })).toStrictEqual(
-        Result.err('objectField must have at least 3 properties')
+        Result.err('objectField must have at least 3 properties'),
       );
       expect(await input(Test, { objectField: false })).toStrictEqual(
-        Result.err('objectField must be an object')
+        Result.err('objectField must be an object'),
       );
       expect(await input(Test, { objectField: undefined })).toStrictEqual(
-        Result.err('objectField must be an object')
+        Result.err('objectField must be an object'),
       );
       expect(await input(Test, { objectField: null })).toStrictEqual(
-        Result.err('objectField must be an object')
+        Result.err('objectField must be an object'),
       );
     });
 
@@ -74,19 +74,19 @@ describe('IsObject', () => {
       }
 
       expect(await input(Test, { objectField: { a: 1 } })).toStrictEqual(
-        Result.ok(make(Test, { objectField: { a: 1 } }))
+        Result.ok(make(Test, { objectField: { a: 1 } })),
       );
       expect(await input(Test, { objectField: { a: 1, b: 2 } })).toStrictEqual(
-        Result.err('objectField must have at most 1 properties')
+        Result.err('objectField must have at most 1 properties'),
       );
       expect(await input(Test, { objectField: false })).toStrictEqual(
-        Result.err('objectField must be an object')
+        Result.err('objectField must be an object'),
       );
       expect(await input(Test, { objectField: undefined })).toStrictEqual(
-        Result.err('objectField must be an object')
+        Result.err('objectField must be an object'),
       );
       expect(await input(Test, { objectField: null })).toStrictEqual(
-        Result.err('objectField must be an object')
+        Result.err('objectField must be an object'),
       );
     });
 
@@ -97,13 +97,13 @@ describe('IsObject', () => {
       }
 
       expect(await input(Test, { objectField: { a: 1 } })).toStrictEqual(
-        Result.ok(make(Test, { objectField: { a: 1 } }))
+        Result.ok(make(Test, { objectField: { a: 1 } })),
       );
       expect(await input(Test, { objectField: undefined })).toStrictEqual(
-        Result.err('objectField must be an object')
+        Result.err('objectField must be an object'),
       );
       expect(await input(Test, { objectField: null })).toStrictEqual(
-        Result.ok(make(Test, { objectField: null }))
+        Result.ok(make(Test, { objectField: null })),
       );
     });
 
@@ -114,13 +114,13 @@ describe('IsObject', () => {
       }
 
       expect(await input(Test, { objectField: { a: 1 } })).toStrictEqual(
-        Result.ok(make(Test, { objectField: { a: 1 } }))
+        Result.ok(make(Test, { objectField: { a: 1 } })),
       );
       expect(await input(Test, { objectField: undefined })).toStrictEqual(
-        Result.ok(make(Test, {}))
+        Result.ok(make(Test, {})),
       );
       expect(await input(Test, { objectField: null })).toStrictEqual(
-        Result.err('objectField must be an object')
+        Result.err('objectField must be an object'),
       );
     });
 
@@ -131,13 +131,13 @@ describe('IsObject', () => {
       }
 
       expect(await input(Test, { objectField: { a: 1 } })).toStrictEqual(
-        Result.ok(make(Test, { objectField: { a: 1 } }))
+        Result.ok(make(Test, { objectField: { a: 1 } })),
       );
       expect(await input(Test, { objectField: undefined })).toStrictEqual(
-        Result.err('objectField must be an object')
+        Result.err('objectField must be an object'),
       );
       expect(await input(Test, { objectField: null })).toStrictEqual(
-        Result.ok(make(Test, { objectField: null }))
+        Result.ok(make(Test, { objectField: null })),
       );
     });
 
@@ -148,13 +148,13 @@ describe('IsObject', () => {
       }
 
       expect(await input(Test, { objectField: { a: 1 } })).toStrictEqual(
-        Result.ok(make(Test, { objectField: { a: 1 } }))
+        Result.ok(make(Test, { objectField: { a: 1 } })),
       );
       expect(await input(Test, { objectField: undefined })).toStrictEqual(
-        Result.ok(make(Test, {}))
+        Result.ok(make(Test, {})),
       );
       expect(await input(Test, { objectField: null })).toStrictEqual(
-        Result.err('objectField must be an object')
+        Result.err('objectField must be an object'),
       );
     });
   });
@@ -167,19 +167,19 @@ describe('IsObject', () => {
 
     it('accepts object arrays', async () => {
       expect(await input(Test, { objectField: [{ a: 1 }, { b: 2 }, { c: 3 }] })).toStrictEqual(
-        Result.ok(make(Test, { objectField: [{ a: 1 }, { b: 2 }, { c: 3 }] }))
+        Result.ok(make(Test, { objectField: [{ a: 1 }, { b: 2 }, { c: 3 }] })),
       );
       expect(await input(Test, { objectField: [] })).toStrictEqual(
-        Result.ok(make(Test, { objectField: [] }))
+        Result.ok(make(Test, { objectField: [] })),
       );
     });
 
     it('rejects everything else', async () => {
       expect(await input(Test, { objectField: true })).toStrictEqual(
-        Result.err('each value in objectField must be an object')
+        Result.err('each value in objectField must be an object'),
       );
       expect(await input(Test, { objectField: ['a', 'b', 'c'] })).toStrictEqual(
-        Result.err('each value in objectField must be an object')
+        Result.err('each value in objectField must be an object'),
       );
     });
   });

@@ -4,7 +4,7 @@ import { compose, noop, PropertyOptions } from '../core';
 
 function validateObjectSize(
   obj: Record<string, unknown> | undefined | null,
-  check: (len: number) => boolean
+  check: (len: number) => boolean,
 ): boolean {
   if (!obj) {
     return true;
@@ -49,5 +49,5 @@ export const IsObject = <T extends Record<string, unknown>>({
               `${args?.property} must have at most ${maxProperties} properties`,
           },
         })
-      : noop
+      : noop,
   );
