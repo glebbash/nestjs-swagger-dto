@@ -20,7 +20,7 @@ describe('IsObject', () => {
     });
 
     it('transforms objects', async () => {
-      expect(output(make(Test, { objectField: { a: 1 }, b: 2 }))).toStrictEqual({
+      expect(output(make(Test, { objectField: { a: 1 }, b: 2 } as never))).toStrictEqual({
         objectField: { a: 1 },
       });
     });

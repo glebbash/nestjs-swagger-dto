@@ -1,6 +1,7 @@
 import {
   IsEmail,
   isISO8601,
+  IsNotEmpty,
   IsString as IsStringCV,
   Length,
   Matches,
@@ -37,7 +38,7 @@ export const IsString = ({
 }: PropertyOptions<
   string,
   {
-    canBeEmpty?: true;
+    canBeEmpty?: boolean;
     maxLength?: number;
     minLength?: number;
     pattern?: { regex: RegExp; message?: ValidationOptions['message'] };
@@ -57,7 +58,8 @@ export const IsString = ({
     },
     base,
     IsStringCV({ each: !!base.isArray }),
-    canBeEmpty || minLength !== undefined || maxLength !== undefined
+    canBeEmpty === false ? IsNotEmpty({ each: !!base.isArray }) : noop,
+    minLength !== undefined || maxLength !== undefined
       ? Length(minLength ?? 0, maxLength, { each: !!base.isArray })
       : noop,
     isEmail ? IsEmail(undefined, { each: !!base.isArray }) : noop,

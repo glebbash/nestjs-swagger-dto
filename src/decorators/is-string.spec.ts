@@ -88,15 +88,24 @@ describe('IsString', () => {
       );
     });
 
-    it('allows empty strings if canBeEmpty is specified', async () => {
+    it('allows empty strings if canBeEmpty is set to true', async () => {
       class TestCanBeEmpty {
         @IsString({ canBeEmpty: true, maxLength: 10 })
         stringField!: string;
       }
 
-      expect(await input(TestCanBeEmpty, { stringField: '' })).toStrictEqual(
-        Result.ok(make(TestCanBeEmpty, { stringField: '' })),
-      );
+      const res = await input(TestCanBeEmpty, { stringField: '' });
+      expect(res).toStrictEqual(Result.ok(make(TestCanBeEmpty, { stringField: '' })));
+    });
+
+    it('does not allows empty strings if canBeEmpty is set to false', async () => {
+      class TestCanNotBeEmpty {
+        @IsString({ canBeEmpty: false, maxLength: 10 })
+        stringField!: string;
+      }
+
+      const res = await input(TestCanNotBeEmpty, { stringField: '' });
+      expect(res).toStrictEqual(Result.err('stringField should not be empty'));
     });
   });
 

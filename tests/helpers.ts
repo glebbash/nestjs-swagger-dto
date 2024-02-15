@@ -9,7 +9,10 @@ import { ClassConstructor, instanceToPlain, plainToClass } from 'class-transform
 import { validate, ValidationError } from 'class-validator';
 import { Result } from 'true-myth';
 
-export function make<T, D extends T>(cls: ClassConstructor<T>, object: D): D {
+export function make<C extends ClassConstructor<unknown>>(
+  cls: C,
+  object: InstanceType<C>,
+): InstanceType<C> {
   return Object.assign(new cls() as never, object);
 }
 
