@@ -232,6 +232,61 @@ describe('IsString', () => {
     });
   });
 
+  describe('array (in query)', () => {
+    class Test {
+      @IsString({ optional: true, isArray: { force: true } })
+      stringField?: string[];
+    }
+
+    it('generates correct schema', async () => {
+      expect(await generateSchemas([Test])).toStrictEqual({
+        Test: {
+          type: 'object',
+          properties: {
+            stringField: {
+              type: 'array',
+              items: {
+                type: 'string',
+              },
+            },
+          },
+        },
+      });
+    });
+
+    it('accepts string arrays', async () => {
+      expect(await input(Test, { stringField: ['a', 'b', 'c'] })).toStrictEqual(
+        Result.ok(make(Test, { stringField: ['a', 'b', 'c'] })),
+      );
+      expect(await input(Test, { stringField: [] })).toStrictEqual(
+        Result.ok(make(Test, { stringField: [] })),
+      );
+    });
+
+    it('accepts singular strings and transforms them into arrays', async () => {
+      expect(await input(Test, { stringField: 'a' })).toStrictEqual(
+        Result.ok(make(Test, { stringField: ['a'] })),
+      );
+
+      expect(await input(Test, { stringField: 'bcde' })).toStrictEqual(
+        Result.ok(make(Test, { stringField: ['bcde'] })),
+      );
+    });
+
+    it('works with optionals', async () => {
+      expect(await input(Test, {})).toStrictEqual(Result.ok(make(Test, {})));
+    });
+
+    it('rejects everything else', async () => {
+      expect(await input(Test, { stringField: true })).toStrictEqual(
+        Result.err('each value in stringField must be a string'),
+      );
+      expect(await input(Test, { stringField: [1, 2, 3] })).toStrictEqual(
+        Result.err('each value in stringField must be a string'),
+      );
+    });
+  });
+
   describe('date', () => {
     describe('date', () => {
       class Test {

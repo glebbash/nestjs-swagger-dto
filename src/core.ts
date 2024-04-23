@@ -23,8 +23,28 @@ export type SingularPropertyOptions<T> = {
 export type ArrayPropertyOptions<T> = {
   example?: T[];
   default?: T[];
-  isArray: true | { minLength?: number; maxLength?: number; length?: number };
+  isArray:
+    | true
+    | {
+        minLength?: number;
+        maxLength?: number;
+        length?: number;
+        /**
+         * Wheter to put singular value into an array of it's own.
+         * Useful if the decorated class is the query DTO.
+         *
+         * *NOTE*: This doesn't create an empty array if the value is not present.
+         */
+        force?: boolean;
+      };
 };
+
+const ForceArrayTransform = Transform(({ value }) => {
+  if (value === undefined) {
+    return value;
+  }
+  return Array.isArray(value) ? value : [value];
+});
 
 export const noop = (): void => undefined;
 
@@ -42,10 +62,11 @@ export const compose = <T, CustomOptions>(
   }: PropertyOptions<T, CustomOptions>,
   ...decorators: PropertyDecorator[]
 ): PropertyDecorator => {
-  const isArrayObj = typeof isArray === 'object' ? isArray : {};
-  const length = isArrayObj.length;
-  const minLength = length ?? isArrayObj.minLength;
-  const maxLength = length ?? isArrayObj.maxLength;
+  const arrayProps = typeof isArray === 'object' ? isArray : {};
+  const length = arrayProps.length;
+  const minLength = length ?? arrayProps.minLength;
+  const maxLength = length ?? arrayProps.maxLength;
+  const forceArray = arrayProps.force ?? false;
 
   return applyDecorators(
     ...decorators,
@@ -55,6 +76,7 @@ export const compose = <T, CustomOptions>(
     !!isArray ? IsArray() : noop,
     minLength ? ArrayMinSize(minLength) : noop,
     maxLength ? ArrayMaxSize(maxLength) : noop,
+    forceArray ? ForceArrayTransform : noop,
     def !== undefined ? Transform(({ value }) => (value === undefined ? def : value)) : noop,
     ApiProperty({
       ...apiPropertyOptions,
