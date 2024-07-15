@@ -142,4 +142,4 @@ export class TestController {
 
 Bootstrapped with: [create-ts-lib-gh](https://github.com/glebbash/create-ts-lib-gh)
 
-This project is [Mit Licensed](LICENSE).
+This project is [MIT Licensed](LICENSE).
