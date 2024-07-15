@@ -114,7 +114,7 @@ You can also validate request headers using `TypedHeaders` decorator.
 ```ts
 export class TestHeaders {
   @IsString({
-    // Note: header names will be lowercased automatically
+    // NOTE: header names will be lowercased automatically
     name: 'country-code',
     maxLength: 2,
     minLength: 2,
