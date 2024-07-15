@@ -1,10 +1,7 @@
-import { TransformationType, TransformFnParams } from 'class-transformer';
+import { Transform, TransformationType, TransformFnParams } from 'class-transformer';
 import { IsDate as IsDateCV, isDateString } from 'class-validator';
 
 import { compose, PropertyOptions } from '../core';
-import { TransformHandlingOptional } from './utils/transform-handling-optional';
-
-const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
 
 // TODO: array support
 export const IsDate = ({
@@ -32,7 +29,7 @@ function transformDate({ key, value, type }: TransformFnParams) {
     return dateToString(value);
   }
 
-  if (!dateRegex.test(value)) {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) {
     return new Error(`${key} is not formatted as \`yyyy-mm-dd\``);
   }
 
@@ -81,4 +78,25 @@ function dateTimeToString(date: Date): string {
 
 function dateToString(date: Date): string {
   return date.toISOString().split('T')[0];
+}
+
+function TransformHandlingOptional(
+  config: { optional?: true; nullable?: true },
+  transform: (params: TransformFnParams) => unknown,
+) {
+  return Transform((params: TransformFnParams) => {
+    if (config.optional && params.value === undefined) {
+      return params.value;
+    }
+
+    if (config.nullable && params.value === null) {
+      return params.value;
+    }
+
+    if (params.value === null || params.value === undefined) {
+      return new Error(`${params.key} does not exist`);
+    }
+
+    return transform(params);
+  });
 }

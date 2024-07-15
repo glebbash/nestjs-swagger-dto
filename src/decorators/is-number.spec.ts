@@ -23,6 +23,7 @@ describe('IsNumber', () => {
       const testValues: unknown[] = [
         { numberField: 'true' },
         { numberField: 'false' },
+        { numberField: '10' },
         { numberField: [] },
         { numberField: {} },
         { numberField: null },

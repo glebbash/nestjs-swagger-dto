@@ -36,7 +36,7 @@ export const TypedHeaders =
 const HeaderSchema = createParamDecorator(
   async (
     options: { paramType: Type<unknown>; validationPipe: ValidationPipe },
-    ctx: ExecutionContext
+    ctx: ExecutionContext,
   ) => {
     // Extract headers
     const headers = ctx.switchToHttp().getRequest().headers;
@@ -46,5 +46,5 @@ const HeaderSchema = createParamDecorator(
       type: 'body',
       metatype: options.paramType,
     });
-  }
+  },
 );

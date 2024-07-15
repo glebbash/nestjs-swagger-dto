@@ -4,13 +4,6 @@ import { noop } from 'rxjs';
 
 import { compose, PropertyOptions } from '../core';
 
-const nestedFieldMessage =
-  (isArray: boolean) =>
-  ({ property }: ValidationArguments) =>
-    isArray
-      ? `nested property ${property} must only contain objects`
-      : `nested property ${property} must be an object`;
-
 export const IsNested = <T>({
   type,
   ...base
@@ -21,11 +14,18 @@ export const IsNested = <T>({
     Type(() => type),
     !base.isArray
       ? IsObject({
-          message: nestedFieldMessage(!!base.isArray),
+          message: getNestedFieldMessage(!!base.isArray),
         })
       : noop,
     ValidateNested({
       each: !!base.isArray,
-      message: nestedFieldMessage(!!base.isArray),
+      message: getNestedFieldMessage(!!base.isArray),
     }),
   );
+
+function getNestedFieldMessage(isArray: boolean) {
+  return ({ property }: ValidationArguments) =>
+    isArray
+      ? `nested property ${property} must only contain objects`
+      : `nested property ${property} must be an object`;
+}

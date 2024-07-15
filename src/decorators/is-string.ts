@@ -5,25 +5,16 @@ import {
   IsString as IsStringCV,
   Length,
   Matches,
+  ValidateBy,
+  ValidationArguments,
   ValidationOptions,
 } from 'class-validator';
 
 import { compose, noop, PropertyOptions } from '../core';
-import { CustomValidate, CustomValidateOptions } from './utils/custom-validator';
 
-export type { CustomValidateOptions };
-
-export type DateFormat = 'date' | 'date-time';
-
-const dateValidators: Record<DateFormat, CustomValidateOptions<string>> = {
-  date: {
-    validator: (value) => /^\d{4}-\d{2}-\d{2}$/.test(value) && !isNaN(new Date(value).getDate()),
-    message: ({ property }) => `${property} is not formatted as \`yyyy-mm-dd\` or not a valid Date`,
-  },
-  'date-time': {
-    validator: (value) => isISO8601(value, { strict: true }) && !isNaN(new Date(value).getDate()),
-    message: ({ property }) => `${property} is not in a ISO8601 format.`,
-  },
+export type CustomValidateOptions<T = unknown> = {
+  validator: (value: T, args: ValidationArguments) => boolean;
+  message: string | ((validationArguments: ValidationArguments) => string);
 };
 
 export const IsString = ({
@@ -43,7 +34,7 @@ export const IsString = ({
     minLength?: number;
     pattern?: { regex: RegExp; message?: ValidationOptions['message'] };
     isEmail?: true;
-    isDate?: { format: DateFormat };
+    isDate?: { format: 'date' | 'date-time' };
     customValidate?: CustomValidateOptions;
   }
 > = {}): PropertyDecorator =>
@@ -64,6 +55,44 @@ export const IsString = ({
       : noop,
     isEmail ? IsEmail(undefined, { each: !!base.isArray }) : noop,
     pattern ? Matches(pattern.regex, { message: pattern.message, each: !!base.isArray }) : noop,
-    isDate ? CustomValidate(dateValidators[isDate.format], { each: !!base.isArray }) : noop,
+    isDate
+      ? CustomValidate(
+          isDate.format === 'date'
+            ? {
+                validator: (value) =>
+                  typeof value === 'string' &&
+                  /^\d{4}-\d{2}-\d{2}$/.test(value) &&
+                  !isNaN(new Date(value).getDate()),
+                message: ({ property }) =>
+                  `${property} is not formatted as \`yyyy-mm-dd\` or not a valid Date`,
+              }
+            : {
+                validator: (value) =>
+                  typeof value === 'string' &&
+                  isISO8601(value, { strict: true }) &&
+                  !isNaN(new Date(value).getDate()),
+                message: ({ property }) => `${property} is not in a ISO8601 format.`,
+              },
+          { each: !!base.isArray },
+        )
+      : noop,
     customValidate ? CustomValidate(customValidate, { each: !!base.isArray }) : noop,
   );
+
+function CustomValidate<T = unknown>(
+  options: CustomValidateOptions<T>,
+  validationOptions?: ValidationOptions,
+): PropertyDecorator {
+  return ValidateBy(
+    {
+      name: 'CustomValidate',
+      constraints: [options],
+      validator: {
+        validate: options.validator,
+        defaultMessage: (args: ValidationArguments) =>
+          typeof options.message === 'string' ? options.message : options.message(args),
+      },
+    },
+    validationOptions,
+  );
+}
