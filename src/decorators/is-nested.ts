@@ -1,8 +1,7 @@
 import { ClassConstructor, Type } from 'class-transformer';
 import { IsObject, ValidateNested, ValidationArguments } from 'class-validator';
-import { noop } from 'rxjs';
 
-import { compose, PropertyOptions } from '../core';
+import { compose, noop, PropertyOptions } from '../core';
 
 export const IsNested = <T>({
   type,
