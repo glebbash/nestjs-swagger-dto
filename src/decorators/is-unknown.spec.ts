@@ -31,6 +31,31 @@ describe('IsUnknown', () => {
       });
     });
 
+    it('generates correct schema (nullable)', async () => {
+      class TestNullable {
+        @IsUnknown({ nullable: true, optional: true })
+        unknownField?: unknown;
+      }
+
+      expect(await generateSchemas([TestNullable])).toStrictEqual({
+        TestNullable: {
+          type: 'object',
+          properties: {
+            unknownField: {
+              oneOf: [
+                { type: 'string', nullable: true },
+                { type: 'number', nullable: true },
+                { type: 'integer', nullable: true },
+                { type: 'boolean', nullable: true },
+                { type: 'array', nullable: true },
+                { type: 'object', nullable: true },
+              ],
+            },
+          },
+        },
+      });
+    });
+
     it('accepts anything except null and undefined', async () => {
       expect(await input(Test, { unknownField: false })).toStrictEqual(
         Result.ok(make(Test, { unknownField: false })),
