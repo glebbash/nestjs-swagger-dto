@@ -1,3 +1,4 @@
+import { ApiPropertyOptions, getSchemaPath } from '@nestjs/swagger';
 import { IsIn } from 'class-validator';
 
 import { compose, PropertyOptions } from '../core';
@@ -20,18 +21,24 @@ export const IsEnum = <T extends number | string>({
 }: PropertyOptions<T, { enum: EnumOptions<T> }>): PropertyDecorator => {
   const { enumValues, enumName } = getEnumNameAndValues(enumOptions);
 
-  return compose(
-    { type: typeof enumValues[0], enum: enumValues, enumName },
-    base,
-    IsIn(enumValues, { each: !!base.isArray }),
-  );
+  let apiPropertyOptions: ApiPropertyOptions = {
+    type: typeof enumValues[0],
+    enum: enumValues,
+    enumName,
+  };
+  // workaround for Nest's @Query handling
+  if (typeof base.isArray === 'object' && base.isArray.force) {
+    apiPropertyOptions = { type: 'array', items: { $ref: getSchemaPath(enumName) } };
+  }
+
+  return compose(apiPropertyOptions, base, IsIn(enumValues, { each: !!base.isArray }));
 };
 
 function getEnumNameAndValues<T extends number | string>(
   e: EnumOptions<T>,
 ): {
   enumValues: T[];
-  enumName?: string;
+  enumName: string;
 } {
   const keys = Object.keys(e);
   if (keys.length !== 1) {

@@ -1,6 +1,7 @@
+import { Controller, Get, Query } from '@nestjs/common';
 import { Result } from 'true-myth';
 
-import { generateSchemas, input, make } from '../../tests/helpers';
+import { generateSchemas, generateSpec, input, make } from '../../tests/helpers';
 import { IsEnum } from '../nestjs-swagger-dto';
 
 describe('IsEnum', () => {
@@ -150,6 +151,48 @@ describe('IsEnum', () => {
           },
           required: ['enumField'],
         },
+      });
+    });
+
+    it('generates correct schema including minLength and maxLength when used in @Query', async () => {
+      enum Flag {
+        On = 'On',
+        Off = 'Off',
+      }
+
+      class TestQuery {
+        @IsEnum({
+          enum: { Flag },
+          isArray: { minLength: 1, maxLength: 2, force: true },
+          optional: true,
+        })
+        enumField?: Flag;
+      }
+
+      @Controller('x')
+      class AppController {
+        @Get()
+        someEndpoint(@Query() {}: TestQuery) {}
+      }
+
+      const spec = await generateSpec([AppController]);
+
+      expect(spec.paths['/x'].get).toStrictEqual({
+        operationId: 'AppController_someEndpoint',
+        parameters: [
+          {
+            in: 'query',
+            name: 'enumField',
+            required: false,
+            schema: {
+              items: { $ref: '#/components/schemas/Flag' },
+              maxItems: 2,
+              minItems: 1,
+              type: 'array',
+            },
+          },
+        ],
+        responses: { '200': { description: '' } },
       });
     });
 

@@ -1,4 +1,4 @@
-import { INestApplication, Type } from '@nestjs/common';
+import { INestApplication, Module, Type } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import type {
@@ -47,14 +47,19 @@ function getValidationError(error: ValidationError): string {
 export async function generateSchemas(
   models: Type[],
 ): Promise<Record<string, SchemaObject | ReferenceObject>> {
-  class AppModule {}
-
-  const spec = SwaggerModule.createDocument(
-    await NestFactory.create<INestApplication>(AppModule, { logger: false }),
-    new DocumentBuilder().build(),
-    { extraModels: models },
-  );
+  const spec = await generateSpec([], models);
 
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   return spec.components!.schemas!;
+}
+
+export async function generateSpec(controllers: Type[], extraModels: Type[] = []) {
+  @Module({ controllers })
+  class AppModule {}
+
+  return SwaggerModule.createDocument(
+    await NestFactory.create<INestApplication>(AppModule, { logger: false }),
+    new DocumentBuilder().build(),
+    { extraModels },
+  );
 }
