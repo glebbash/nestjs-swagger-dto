@@ -1,4 +1,4 @@
-import { IsDefined } from 'class-validator';
+import { IsDefined, ValidateIf } from 'class-validator';
 
 import { BasePropertyOptions, compose } from '../core';
 
@@ -21,5 +21,6 @@ export const IsUnknown = ({
       ],
     },
     base,
+    ...(nullable ? [ValidateIf((_, v) => v !== null)] : []),
     IsDefined(),
   );
